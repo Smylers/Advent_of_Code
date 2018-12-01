@@ -1,0 +1,6 @@
+#! /bin/sh
+
+echo Part 1:
+$ perl -wnE '$t += $_; END {say $t }' input
+echo Part 2:
+./repeated_frequency input
