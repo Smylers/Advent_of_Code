@@ -26,3 +26,4 @@ inoremap <C-B><C-W> ⟨Ctrl+W⟩
 inoremap <C-B><C-X> ⟨Ctrl+X⟩
 inoremap <C-B><C-Y> ⟨Ctrl+Y⟩
 inoremap <C-B><C-Z> ⟨Ctrl+Z⟩
+let @a = '$F⟨hv^l'
