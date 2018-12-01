@@ -1,0 +1,11 @@
+#! /usr/bin/perl
+
+# repeated_frequency
+
+use v5.14;
+use warnings;
+
+my @change = <>;
+my %seen = (my $frequency = 0 => 1);
+push @change, shift @change until $seen{$frequency += $change[0]}++;
+say $frequency;
