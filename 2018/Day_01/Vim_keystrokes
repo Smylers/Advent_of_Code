@@ -1,0 +1,24 @@
+part 1
+
+    :%s/\v\+(.*)/\1⟨Ctrl+A⟩⟨Enter⟩
+    :%s/\v-(.*)/\1⟨Ctrl+X⟩⟨Enter⟩
+    {O0⟨Esc⟩
+    qa⟨Enter⟩dd:1norm⟨Ctrl+R⟩1⟨Enter⟩kq
+
+    qbqqb@a:redr|sl4m⟨Enter⟩@bq
+
+    @b
+
+
+part 2
+
+    :%s/\v\+(.*)/\1⟨Ctrl+A⟩⟨Enter⟩
+    :%s/\v-(.*)/\1⟨Ctrl+X⟩⟨Enter⟩
+    {O0⟨Esc⟩
+
+    ⟨Ctrl+W⟩na0⟨Esc⟩⟨Ctrl+W⟩p
+
+    qc⟨Enter⟩ddGp:1norm⟨Ctrl+R⟩1⟨Enter⟩kyy⟨Ctrl+W⟩ppmm:sor nu⟨Enter⟩
+    'm⟨Ctrl+W⟩pq
+
+    qdqqd@c:redr⟨Enter⟩@dq
