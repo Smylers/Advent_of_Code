@@ -3,5 +3,14 @@ Part 1:
     :%s/\v(.)(.*)\1(.*)\1/#\2\3⟨Enter⟩
     :%s/\v(.)(.*)\1/-\2⟨Enter⟩
     :%s/[a-z]//g⟨Enter⟩
+    :g/^$/d⟨Enter⟩
+    :%s/\v(.)(.)/\1⟨Ctrl+V⟩⟨Enter⟩\2⟨Enter⟩
+    :sor⟨Enter⟩
+    :,/-/-j⟨Enter⟩
+    jVGJ
+    :%s/\S/+1/g⟨Enter⟩
+    :%s/.*/(&)⟨Enter⟩
+    kJr*
+    0C⟨Ctrl+R⟩=⟨Ctrl+R⟩-⟨Enter⟩⟨Esc⟩
 
 
