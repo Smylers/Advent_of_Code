@@ -1,0 +1,40 @@
+Part 1:
+
+    ⟨Ctrl+W⟩n1001a-⟨Esc⟩yy1000p⟨Ctrl+W⟩p
+
+    :set nf=⟨Enter⟩
+    :%norm W⟨Ctrl+A⟩l⟨Ctrl+A⟩l⟨Ctrl+X⟩l⟨Ctrl+X⟩⟨Enter⟩
+    :%s/\v\@ (\d+),(\d+): (\d+)x(\d+)/\2gg\1|⟨Ctrl+V⟩⟨Ctrl+V⟩\3l\4j⟨Enter⟩
+    {
+
+    qa
+    Wy$⟨Ctrl+W⟩p:norm⟨Ctrl+R⟩⟨Ctrl+R⟩0⟨Enter⟩
+    :s/\v%V\*/X/ge⟨Enter⟩
+    gv:s/\v%V-/*/ge⟨Enter⟩
+    ⟨Ctrl+W⟩p⟨Enter⟩q
+
+    [maximize]
+    :set gnf=*⟨Enter⟩
+    8⟨Ctrl+W⟩_
+
+    @a
+    @@
+
+    :,$norm@a:redr⟨Ctrl+V⟩⟨Enter⟩⟨Enter⟩
+
+    ⟨Ctrl+W⟩p:%s/[^X]//g⟨Enter⟩
+    VgggJg⟨Ctrl+G⟩
+
+Part 2:
+
+    uu⟨Ctrl+W⟩p{
+    qb
+    Wy$⟨Ctrl+W⟩p:norm⟨Ctrl+R⟩⟨Ctrl+R⟩0⟨Enter⟩
+    ⟨Ctrl+V⟩/\v%VX⟨Enter⟩
+    ⟨Ctrl+W⟩p⟨Enter⟩q
+    qcqqc@b@cq@c
+    ⟨Ctrl+W⟩p0
+
+  To allow for single-width/height rectangles:
+
+    :%s/\v<0[lj]//e⟨Enter⟩
