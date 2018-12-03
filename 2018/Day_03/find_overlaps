@@ -4,18 +4,28 @@
 
 use v5.14;
 use warnings;
+use List::AllUtils qw<all>;
 
-my (@fabric, $overlaps);
+my (@fabric, $overlaps, %claim_area);
 while (<>)
 {
-  my ($left, $top, $width, $height) = /(\d+),(\d+): (\d+)x(\d+)/
+  my ($id, $left, $top, $width, $height) = /#(\d+) @ (\d+),(\d+): (\d+)x(\d+)/
       or die "Unexpected input: $_ at line $.\n";
+  my @clear;
   for my $row ($top .. $top + $height - 1)
   {
     for my $col ($left .. $left + $width - 1)
     {
-      $overlaps++ if $fabric[$row][$col]++ == 1;
+      $overlaps++                       if $fabric[$row][$col]++ == 1;
+      push @clear, \$fabric[$row][$col] if $fabric[$row][$col]   == 1;
     }
   }
+  $claim_area{$id} = \@clear if @clear == $width * $height;
 }
+
 say "overlaps: $overlaps";
+
+while (my ($id, $area) = each %claim_area)
+{
+  say "non-overlapping ID: $id" if all { $$_ == 1 } @$area;
+}
