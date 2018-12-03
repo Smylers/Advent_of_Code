@@ -15,4 +15,6 @@ Part 1:
     kJr*
     0C⟨Ctrl+R⟩=⟨Ctrl+R⟩-⟨Enter⟩⟨Esc⟩
 
+Part 2:
 
+    :%s/\v^(.*).(.*)\n(.+\n)*\1.\2/\1\2⟨Enter⟩
