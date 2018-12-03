@@ -1,0 +1,21 @@
+#! /usr/bin/perl
+
+# find_overlaps
+
+use v5.14;
+use warnings;
+
+my (@fabric, $overlaps);
+while (<>)
+{
+  my ($left, $top, $width, $height) = /(\d+),(\d+): (\d+)x(\d+)/
+      or die "Unexpected input: $_ at line $.\n";
+  for my $row ($top .. $top + $height - 1)
+  {
+    for my $col ($left .. $left + $width - 1)
+    {
+      $overlaps++ if $fabric[$row][$col]++ == 1;
+    }
+  }
+}
+say $overlaps;
