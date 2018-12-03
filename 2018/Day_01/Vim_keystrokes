@@ -22,3 +22,18 @@ part 2
     'm⟨Ctrl+W⟩pq
 
     qdqqd@c@dq
+
+  or:
+
+    :%s/\v\+(.*)/\1⟨Ctrl+A⟩⟨Enter⟩
+    :%s/\v-(.*)/\1⟨Ctrl+X⟩⟨Enter⟩
+    {O0⟨Esc⟩
+
+    qayypjDk:norm⟨Ctrl+R⟩-⟨Enter⟩gJq
+    .,$-1norm@a⟨Enter⟩
+
+    Ddd
+    :%s/.*/\=submatch(0).' '.submatch(0)⟨Ctrl+R⟩-⟨Enter⟩
+
+
+    
