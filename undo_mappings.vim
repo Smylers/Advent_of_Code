@@ -1,4 +1,5 @@
 set gdefault& whichwrap& comments& cindent& smartindent& ignorecase& smartcase&
+  \ formatoptions&
 unmap /
 unmap :s/
 unmap :s:
