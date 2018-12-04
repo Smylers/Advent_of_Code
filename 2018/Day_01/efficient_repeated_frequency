@@ -13,20 +13,17 @@ pop @change;
 my %group = partition_by { $_->{freq} % $offset }
     map { {pos => ++(state $pos), freq => state $freq += $_} } 0, @change;
 
-my ($min_diff, $min_pos, $first_repeat);
+my %min;
 foreach (values %group)
 {
   my @state = nsort_by { $_->{freq} } @$_;
   for (1 .. $#state)
   {
     my $diff = $state[$_]{freq} - $state[$_ - 1]{freq};
-    if (!defined $min_diff || $diff < $min_diff
-        || $diff == $min_diff && $state[$_ - 1]{pos} < $min_pos)
-    {
-      $min_diff = $diff;
-      $min_pos = $state[$_ - 1]{pos};
-      $first_repeat = $state[$_]{freq};
-    }
+    %min =
+        (diff => $diff, pos => $state[$_ - 1]{pos}, repeat => $state[$_]{freq})
+        if !%min || $diff < $min{diff}
+            || $diff == $min{diff} && $state[$_ - 1]{pos} < $min{pos};
   }
 }
-say $first_repeat;
+say $min{repeat};
