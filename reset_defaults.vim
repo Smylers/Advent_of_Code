@@ -1,5 +1,5 @@
 set gdefault& whichwrap& comments& cindent& smartindent& ignorecase& smartcase&
-  \ formatoptions&
+  \ formatoptions& lazyredraw
 unmap /
 unmap :s/
 unmap :s:
