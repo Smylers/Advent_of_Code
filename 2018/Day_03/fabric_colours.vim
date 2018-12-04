@@ -1,6 +1,7 @@
 set synmaxcol=1001
 
 hi Normal guibg=#0F0F23 guifg=#CCCCCC
+hi Visual guibg=#24243D guifg=#990099 gui=bold
 
 sy match Empty          /\v-+/
 sy match Once           /\v\*+/
