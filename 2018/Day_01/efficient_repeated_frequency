@@ -6,11 +6,11 @@ use v5.14;
 use warnings;
 use List::AllUtils qw<partition_by nsort_by>;
 
-my ($pos, $modulus);
+my $modulus;
 my @change = <>;
 
 my %group = partition_by { $_->{freq} % ($modulus + $change[-1]) }
-    map { {pos => ++$pos, freq => $modulus += $_} }
+    map { {pos => ++(state $pos), freq => $modulus += $_} }
     0, @change[0 .. $#change - 1];
 
 my ($min_diff, $min_pos, $first_repeat);
