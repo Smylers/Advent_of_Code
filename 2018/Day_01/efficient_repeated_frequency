@@ -16,14 +16,14 @@ my %group = partition_by { $_->{freq} % $offset }
 my %min;
 foreach (values %group)
 {
-  my @state = nsort_by { $_->{freq} } @$_;
-  for (1 .. $#state)
+  my $prev;
+  foreach (nsort_by { $_->{freq} } @$_)
   {
-    my $diff = $state[$_]{freq} - $state[$_ - 1]{freq};
-    %min =
-        (diff => $diff, pos => $state[$_ - 1]{pos}, repeat => $state[$_]{freq})
+    next if !defined $prev;
+    my $diff = $_->{freq} - $prev->{freq};
+    %min = (diff => $diff, pos => $prev->{pos}, repeat => $_->{freq})
         if !%min || $diff < $min{diff}
-            || $diff == $min{diff} && $state[$_ - 1]{pos} < $min{pos};
-  }
+            || $diff == $min{diff} && $prev->{pos} < $min{pos};
+  } continue { $prev = $_ }
 }
 say $min{repeat};
