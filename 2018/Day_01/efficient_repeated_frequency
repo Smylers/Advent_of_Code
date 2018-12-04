@@ -6,12 +6,14 @@ use v5.14;
 use warnings;
 use List::AllUtils qw<nsort_by>;
 
-my @state = (0);
-push @state, $state[-1] + $_ while <>;
-my $modulus = pop @state;
+my ($pos, $modulus);
+my @change = <>;
+my @state = map { {pos => ++$pos, freq => $modulus += $_} }
+    0, @change[0 .. $#change - 1];
+$modulus += $change[-1];
 
-my ($pos, %group);
-push @{$group{$_ % $modulus}}, {freq => $_, pos => ++$pos} foreach @state;
+my %group;
+push @{$group{$_->{freq} % $modulus}}, $_ foreach @state;
 
 my ($min_diff, $min_pos, $first_repeat);
 foreach (values %group)
