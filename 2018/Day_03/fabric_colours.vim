@@ -10,4 +10,4 @@ sy match NonOverlapping /\v##+/
 hi Empty          guifg=#333333
 hi Once           guifg=#009900 gui=bold
 hi Overlap        guifg=#FF0000
-hi NonOverlapping guifg=#FFFF66 gui=bold
+hi NonOverlapping guifg=#FFFF66
