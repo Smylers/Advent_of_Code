@@ -1,0 +1,36 @@
+#! /usr/bin/perl
+
+# most_asleep
+
+use v5.20;
+use warnings;
+use experimental qw<signatures>;
+use List::AllUtils qw<max_by>;
+
+my ($guard, $fell_asleep, %total_asleep, %min_asleep);
+foreach (sort <>)
+{
+  if (/ 00:(\d+)\] falls asleep/)
+  {
+    $fell_asleep = $1;
+  }
+  else
+  {
+    if (defined $fell_asleep)
+    {
+      my $awoke = / 00:(\d\d)\] wakes up/ ? $1 : 60;
+      $total_asleep{$guard} += $awoke - $fell_asleep;
+      $min_asleep{$guard}[$_]++ for $fell_asleep .. $awoke - 1;
+      $fell_asleep = undef;
+    }
+    $guard = $1 if /#(\d+) begins shift/;
+  }
+}
+
+$guard = max_by { $total_asleep{$_} } keys %total_asleep;
+say 'Part 1: ', $guard * sleepiest_min($min_asleep{$guard});
+
+$guard = max_by { $min_asleep{$_}[sleepiest_min($min_asleep{$_})] } keys %min_asleep;
+say 'Part 2: ', $guard * sleepiest_min($min_asleep{$guard});
+
+sub sleepiest_min($tally) { max_by { $tally->[$_] // 0 } 0 .. 59 }
