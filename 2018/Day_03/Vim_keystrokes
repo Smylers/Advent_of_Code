@@ -1,6 +1,9 @@
 Part 1:
 
-    ⟨Ctrl+W⟩n1001a-⟨Esc⟩yy1000p⟨Ctrl+W⟩p
+    ⟨Ctrl+W⟩n1001a-⟨Esc⟩yy1000p
+
+    :so fabric_colours.vim⟨Enter⟩
+    ⟨Ctrl+W⟩p
 
     :set nf=⟨Enter⟩
     :%norm W⟨Ctrl+A⟩l⟨Ctrl+A⟩l⟨Ctrl+X⟩l⟨Ctrl+X⟩⟨Enter⟩
