@@ -26,3 +26,16 @@ Part 2:
   Alternative — a bit silly:
 
     0PwC⟨Ctrl+R⟩=len('⟨Ctrl+R⟩-')⟨Enter⟩ ⟨Esc⟩
+
+  Full alternative:
+
+    yy26pj⟨Ctrl+V⟩GI⟨Ctrl+V⟩⟨Ctrl+V⟩96 ⟨Esc⟩⟨Ctrl+V⟩Geg⟨Ctrl+A⟩
+    qbce⟨Ctrl+R⟩-⟨Esc⟩q
+    ⟨Ctrl+O⟩
+    qcx:s/⟨Ctrl+R⟩-//g⟨Enter⟩
+    0Pq:+,$norm@c⟨Enter⟩
+    :%s/\v(.)\1&(\l\u|\u\l)//g⟨Enter⟩
+    qaqqag&:redr⟨Enter⟩
+    @aq@a
+    :%s/\v(\w\w+)/\=len(submatch(0))⟨Enter⟩
+    :2,sor⟨Enter⟩
