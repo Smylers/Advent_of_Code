@@ -9,7 +9,7 @@ inoremap <C-B><C-E> ⟨Ctrl+E⟩
 inoremap <C-B><C-F> ⟨Ctrl+F⟩
 inoremap <C-B><C-G> ⟨Ctrl+G⟩
 inoremap <C-B><C-H> ⟨Ctrl+H⟩
-inoremap <C-B><C-I> ⟨Ctrl+I⟩
+inoremap <C-B><C-I> ⟨Tab⟩
 inoremap <C-B><C-J> ⟨Ctrl+J⟩
 inoremap <C-B><C-K> ⟨Ctrl+K⟩
 inoremap <C-B><C-L> ⟨Ctrl+L⟩
