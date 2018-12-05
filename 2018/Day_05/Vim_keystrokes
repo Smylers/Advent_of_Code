@@ -29,13 +29,14 @@ Part 2:
 
   Full alternative:
 
-    yy26pj⟨Ctrl+V⟩GI⟨Ctrl+V⟩⟨Ctrl+V⟩96 ⟨Esc⟩⟨Ctrl+V⟩Geg⟨Ctrl+A⟩
-    qbce⟨Ctrl+R⟩-⟨Esc⟩q
-    ⟨Ctrl+O⟩
-    qcx:s/⟨Ctrl+R⟩-//g⟨Enter⟩
-    0Pq:+,$norm@c⟨Enter⟩
-    :%s/\v(.)\1&(\l\u|\u\l)//g⟨Enter⟩
-    qaqqag&:redr⟨Enter⟩
-    @aq@a
-    :%s/\v(\w\w+)/\=len(submatch(0))⟨Enter⟩
+    :set ic⟨Enter⟩
+    o:&&⟨Enter⟩
+    @a⟨Esc⟩v-"addd
+    yy26p⟨Ctrl+V⟩GI⟨Ctrl+V⟩⟨Ctrl+V⟩96 ⟨Esc⟩gveg⟨Ctrl+A⟩
+    qbce⟨Ctrl+R⟩-⟨Esc⟩x:s/⟨Ctrl+R⟩-//g⟨Enter⟩
+    0Pq:+,$norm@b⟨Enter⟩
+    {
+    qc:s/\v(.)\1&(\l\u|\u\l)//g⟨Enter⟩@aq
+    qd:s/\v\w+$/\=len(submatch(0))⟨Enter⟩q
+    :+,$norm:redr|norm@c⟨Ctrl+V⟩⟨Enter⟩@d⟨Enter⟩
     :2,sor⟨Enter⟩
