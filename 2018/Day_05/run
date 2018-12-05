@@ -1,0 +1,11 @@
+#! /bin/sh
+#
+# run
+#
+# Runs today's Perl one-liners
+
+echo Part 1:
+    perl -wlnE '1 while s/(?i:(.)\1)(?<=[a-z][A-Z]|[A-Z][a-z])//g; say length' input
+
+echo Part 2:
+    perl -MList::AllUtils=min -wnlE '$polymer = $_; say min map { $_ = $polymer =~ s/$_//igr; 1 while s/(?i:(.)\1)(?<=[a-z][A-Z]|[A-Z][a-z])//g; length } "a".."z"' input
