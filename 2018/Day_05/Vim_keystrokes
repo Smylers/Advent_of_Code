@@ -1,8 +1,28 @@
 Part 1:
 
-    :set ic⟨Enter⟩
+    y$:set ic⟨Enter⟩
     :s/\v(\l\u|\u\l)&(.)\2//g⟨Enter⟩
-    g&
-    qaqqag&:redr⟨Enter⟩
+    qaqqa:&&⟨Enter⟩
     @aq@a
     g⟨Ctrl+G⟩
+
+Part 2:
+
+    o⟨Ctrl+V⟩⟨Ctrl+V⟩96⟨Esc⟩"yyy25"ypk⟨Ctrl+V⟩}g⟨Ctrl+A⟩
+    qbC⟨Ctrl+R⟩- ⟨Esc⟩q:+,$norm@b⟨Enter⟩
+    ⟨Ctrl+O⟩
+
+    qc$"0p0x:s!⟨Ctrl+R⟩-!!g⟨Enter⟩
+    0P:s/⟨Up⟩⟨Enter⟩
+    :norm@a⟨Enter⟩
+    wi⟨Ctrl+R⟩=col('$')-3⟨Enter⟩ ⟨Esc⟩D:redr⟨Enter⟩q
+
+    ⟨Enter⟩@c
+
+    :+,$norm@c⟨Enter⟩
+    :sor n⟨Enter⟩
+    ww
+
+  Alternative — a bit silly:
+
+    0PwC⟨Ctrl+R⟩=len('⟨Ctrl+R⟩-')⟨Enter⟩ ⟨Esc⟩
