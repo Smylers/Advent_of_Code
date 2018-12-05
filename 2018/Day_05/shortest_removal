@@ -1,0 +1,15 @@
+#! /usr/bin/perl
+
+# shortest_removal
+
+use v5.14;
+use warnings;
+use List::AllUtils qw<min>;
+
+chomp (my $polymer = <>);
+
+say min map {
+    $_ = $polymer =~ s/$_//igr;
+    1 while s/(?i:(.)\1)(?<=[a-z][A-Z]|[A-Z][a-z])//g;
+    length
+  } 'a' .. 'z';
