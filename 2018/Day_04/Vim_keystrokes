@@ -1,0 +1,28 @@
+    :sor⟨Enter⟩
+    yG⟨Ctrl+W⟩nPWW:v/⟨Ctrl+R⟩⟨Ctrl+W⟩/d⟨Enter⟩
+    ⟨Ctrl+V⟩f#:%s/ .*⟨Enter⟩
+    :sor nu⟨Enter⟩
+    O0:0⟨Esc⟩yy59p⟨Ctrl+V⟩']g⟨Ctrl+A⟩k1vVjJ0DJ:%s/$/:0⟨Tab⟩⟨Ctrl+R⟩-⟨Enter⟩
+    qaw⟨Ctrl+A⟩Wqu
+    ⟨Ctrl+W⟩p:%s/:0/:⟨Enter⟩
+
+    {qb/l⟨Enter⟩
+    T:yiwj:norm⟨Ctrl+R⟩0⟨Ctrl+X⟩⟨Enter⟩
+    "zyiw?#⟨Enter⟩
+    l"yyiw⟨Ctrl+O⟩⟨Ctrl+W⟩p/^⟨Ctrl+R⟩y:⟨Enter⟩
+    w:norm⟨Ctrl+R⟩z⟨Ctrl+A⟩W⟨Ctrl+R⟩0W⟨Ctrl+R⟩z@a⟨Enter⟩
+    ⟨Ctrl+W⟩pdkq
+
+    @b @@ @@
+
+    qcqqc@b:redr⟨Enter⟩
+    @cq@c
+
+    ⟨Ctrl+W⟩p:sor⟨Enter⟩
+
+
+
+
+
+
+
