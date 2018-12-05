@@ -1,5 +1,6 @@
 set fo=
 inoremap <C-B><Esc> ⟨Esc⟩
+inoremap <C-B><C-@> ⟨Ctrl+@⟩
 inoremap <C-B><C-A> ⟨Ctrl+A⟩
 inoremap <C-B><C-B> ⟨Ctrl+B⟩
 inoremap <C-B><C-C> ⟨Ctrl+C⟩
