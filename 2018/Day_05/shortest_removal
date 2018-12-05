@@ -2,14 +2,13 @@
 
 # shortest_removal
 
-use v5.14;
+use v5.20;
 use warnings;
+use experimental qw<signatures>;
 use List::AllUtils qw<min>;
 
-chomp (my $polymer = <>);
+sub collapse($p) { 1 while $p =~ s/(?i:(.)\1)(?<=[a-z][A-Z]|[A-Z][a-z])//g; $p }
 
-say min map {
-    $_ = $polymer =~ s/$_//igr;
-    1 while s/(?i:(.)\1)(?<=[a-z][A-Z]|[A-Z][a-z])//g;
-    length
-  } 'a' .. 'z';
+chomp (my $polymer = collapse <>);
+say length $polymer;
+say min map { length collapse($polymer =~ s/$_//igr) } 'a' .. 'z';
