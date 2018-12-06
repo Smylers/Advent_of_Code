@@ -4,11 +4,11 @@
 
 use v5.14; use warnings; use List::AllUtils qw<minmax any max>;
 
-my @range = map { {} } 0..1;
+my @dim = map { {} } 0..1;
 my @edge = map
 {
   my @coord = /(\d+)/g;
-  @{$range[$_]}{qw<min max>} = minmax $coord[$_], values %{$range[$_]} for 0..1;
+  @{$dim[$_]}{qw<min max>} = minmax $coord[$_], values %{$dim[$_]} for 0..1;
   {area_id => ++(state $area_id), coord => \@coord, pos_id => "@coord"},
 } <>;
 
@@ -28,7 +28,7 @@ while (@edge)
     {
       my @coord = map { $current->{coord}[$_] + $diff->[$_] } 0..1;
       next if $done{my $pos_id = "@coord"};
-      if (any { $coord[$_] < $range[$_]{min} || $coord[$_] > $range[$_]{max} } 0..1)
+      if (any { $coord[$_] < $dim[$_]{min} || $coord[$_] > $dim[$_]{max} } 0..1)
       {
         delete $area_size{$current->{area_id}};
       }
