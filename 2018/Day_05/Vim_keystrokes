@@ -29,11 +29,11 @@ Part 2:
 
   Full alternative:
 
-    :set ic⟨Enter⟩
+    :se ic nf=alpha⟨Enter⟩
     :s/\v(.)\1&(\l\u|\u\l)//g⟨Enter⟩
     qaqqa:&&⟨Enter⟩@aq@a
-    yy26p⟨Ctrl+V⟩GI⟨Ctrl+V⟩⟨Ctrl+V⟩96 ⟨Esc⟩gveg⟨Ctrl+A⟩
-    qbce⟨Ctrl+R⟩-⟨Esc⟩x:s!⟨Ctrl+R⟩-!!g⟨Enter⟩
+    yy26p⟨Ctrl+V⟩GIa ⟨Esc⟩j1vg⟨Ctrl+A⟩k
+    qbx:s!⟨Ctrl+R⟩-!!g⟨Enter⟩
     0Pq:+,$norm@b⟨Enter⟩
     {qc$BC⟨Ctrl+R⟩=len(@-)⟨Enter⟩⟨Esc⟩q⟨Enter⟩
     :s/<Up>⟨Enter⟩
