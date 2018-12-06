@@ -2,19 +2,22 @@
 
 # region_size
 
-use v5.14; use warnings; use List::AllUtils qw<minmax max>;
+use v5.14; use warnings; use List::AllUtils qw<minmax max>; use Syntax::Keyword::Junction qw<any>;
 
-my (%dim, @area_size, $region_size);
+my (%dim, %area_size, $region_size);
 my @coord = map {
   /(?<x>\d+), (?<y>\d+)/ or die "Unexpected input: $_";
   @{$dim{$_}}{qw<min max>} = minmax $+{$_} + 0, values %{$dim{$_}} for qw<x y>;
+  $area_size{(state $area_id)++ // 0} = 0;
   {x => $+{x}, y => $+{y}};
 } <>;
 
 for my $x ($dim{x}{min} .. $dim{x}{max})
 {
+  my $side = $x == any values %{$dim{x}};
   for my $y ($dim{y}{min} .. $dim{y}{max})
   {
+    my $edge = $side || $y == any values %{$dim{y}};
     my ($total, $min_dist, $min_area_id);
     while (my ($area_id, $pos) = each @coord)
     {
@@ -26,12 +29,13 @@ for my $x ($dim{x}{min} .. $dim{x}{max})
       }
       elsif ($dist == $min_dist)
       {
-        $min_area_id = undef;
+        $min_area_id = '';
       }
     }
-    $area_size[$min_area_id]++ if defined $min_area_id;
-    $region_size++ if $total < 10e3;
+    delete $area_size{$min_area_id} if $edge;
+    $area_size{$min_area_id}++      if exists $area_size{$min_area_id};
+    $region_size++                  if $total <10e3;
   }
 }
-say 'largest area: ', max @area_size;
+say 'largest area: ', max values %area_size;
 say 'region size:  ', $region_size;
