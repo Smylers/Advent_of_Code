@@ -11,25 +11,29 @@ for my $dimension (0..1) {
   @{$range[$dimension]}{qw<min max>} = minmax map { $_->{coord}[$dimension] } @edge;
 }
 
-my %done;
+my %done = map { ("@{$_->{coord}}" => 1) } @edge;
 while (@edge)
 {
   my %next_edge;
   foreach my $current (@edge)
   {
-    $done{"@{$current->{coord}}"} = 1;
     foreach my $diff ([-1, 0], [+1, 0], [0, -1], [0, +1])
     {
       my @coord = map { $current->{coord}[$_] + $diff->[$_] } 0..1;
+      next  if $done{"@coord"};
       if (any { $coord[$_] < $range[$_]{min} || $coord[$_] > $range[$_]{max} } 0..1)
       {
         delete $area_size{$current->{id}};
       }
-      elsif (delete $next_edge{"@coord"})
+      elsif (exists $next_edge{"@coord"})
       {
-        $done{"@coord"} = 1;
+        if ($next_edge{"@coord"}{id} ne $current->{id})
+        {
+          delete $next_edge{"@coord"};
+          $done{"@coord"} = 1;
+        }
       }
-      elsif (!$done{"@coord"})
+      else
       {
         $next_edge{"@coord"} = {id => $current->{id}, coord => \@coord};
       }
@@ -37,6 +41,7 @@ while (@edge)
   }
   @edge = map {
       $area_size{$_->{id}}++ if exists $area_size{$_->{id}};
+      $done{"@{$_->{coord}}"} = 1;
       $_ } values %next_edge;
 }
 say max values %area_size;
