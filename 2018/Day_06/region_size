@@ -4,21 +4,22 @@
 
 use v5.14; use warnings; use List::AllUtils qw<minmax>;
 
-my @coord = map { [/(\d+)/g] } <>;
-my @dim;
-for my $i (0..1)
-{
-  @{$dim[$i]}{qw<min max>} = minmax map { $_->[$i] } @coord;
-}
+my %dim;
+my @coord = map {
+  /(?<x>\d+), (?<y>\d+)/ or die "Unexpected input: $_";
+  @{$dim{$_}}{qw<min max>} = minmax $+{$_} + 0, values %{$dim{$_}} for qw<x y>;
+  {x => $+{x}, y => $+{y}};
+} <>;
+
 my $region_size;
-for my $x ($dim[0]{min} .. $dim[0]{max})
+for my $x ($dim{x}{min} .. $dim{x}{max})
 {
-  POS: for my $y ($dim[1]{min} .. $dim[1]{max})
+  POS: for my $y ($dim{y}{min} .. $dim{y}{max})
   {
     my $total;
     foreach (@coord)
     {
-      next POS if ($total += abs ($_->[0] - $x) + abs ($_->[1] - $y)) >= 10e3;
+      next POS if ($total += abs ($_->{x} - $x) + abs ($_->{y} - $y)) >= 10e3;
     }
     $region_size++;
   }
