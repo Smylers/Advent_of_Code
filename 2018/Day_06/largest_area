@@ -1,0 +1,42 @@
+#! /usr/bin/perl
+
+# largest_area
+
+use v5.14; use warnings; use List::AllUtils qw<minmax any max>;
+
+my @edge = map { {id => ++(state $id), coord => [/(\d+)/g]} } <>;
+my %area_size = map { $_->{id} => 1 } @edge;
+my @range;
+for my $dimension (0..1) {
+  @{$range[$dimension]}{qw<min max>} = minmax map { $_->{coord}[$dimension] } @edge;
+}
+
+my %done;
+while (@edge)
+{
+  my %next_edge;
+  foreach my $current (@edge)
+  {
+    $done{"@{$current->{coord}}"} = 1;
+    foreach my $diff ([-1, 0], [+1, 0], [0, -1], [0, +1])
+    {
+      my @coord = map { $current->{coord}[$_] + $diff->[$_] } 0..1;
+      if (any { $coord[$_] < $range[$_]{min} || $coord[$_] > $range[$_]{max} } 0..1)
+      {
+        delete $area_size{$current->{id}};
+      }
+      elsif (delete $next_edge{"@coord"})
+      {
+        $done{"@coord"} = 1;
+      }
+      elsif (!$done{"@coord"})
+      {
+        $next_edge{"@coord"} = {id => $current->{id}, coord => \@coord};
+      }
+    }
+  }
+  @edge = map {
+      $area_size{$_->{id}}++ if exists $area_size{$_->{id}};
+      $_ } values %next_edge;
+}
+say max values %area_size;
