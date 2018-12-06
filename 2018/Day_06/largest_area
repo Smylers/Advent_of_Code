@@ -4,7 +4,7 @@
 
 use v5.14; use warnings; use List::AllUtils qw<minmax any max>;
 
-my @edge = map { {id => ++(state $id), coord => [/(\d+)/g]} } <>;
+my @edge = map { {area_id => ++(state $area_id), coord => [/(\d+)/g]} } <>;
 my @range;
 for my $dimension (0..1) {
   @{$range[$dimension]}{qw<min max>} = minmax map { $_->{coord}[$dimension] } @edge;
@@ -16,7 +16,7 @@ while (@edge)
 {
   foreach (@edge)
   {
-    $area_size{$_->{id}}++ if exists $area_size{$_->{id}};
+    $area_size{$_->{area_id}}++ if exists $area_size{$_->{area_id}};
     $done{"@{$_->{coord}}"} = 1;
   }
   my %next_edge;
@@ -28,11 +28,11 @@ while (@edge)
       next  if $done{"@coord"};
       if (any { $coord[$_] < $range[$_]{min} || $coord[$_] > $range[$_]{max} } 0..1)
       {
-        delete $area_size{$current->{id}};
+        delete $area_size{$current->{area_id}};
       }
       elsif (exists $next_edge{"@coord"})
       {
-        if ($next_edge{"@coord"}{id} ne $current->{id})
+        if ($next_edge{"@coord"}{area_id} ne $current->{area_id})
         {
           delete $next_edge{"@coord"};
           $done{"@coord"} = 1;
@@ -40,7 +40,7 @@ while (@edge)
       }
       else
       {
-        $next_edge{"@coord"} = {id => $current->{id}, coord => \@coord};
+        $next_edge{"@coord"} = {area_id => $current->{area_id}, coord => \@coord};
       }
     }
   }
