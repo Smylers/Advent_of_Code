@@ -23,9 +23,9 @@ while (@edge)
   my %next_edge;
   foreach my $current (@edge)
   {
-    foreach my $diff ([-1, 0], [+1, 0], [0, -1], [0, +1])
+    foreach my $move ([-1, 0], [+1, 0], [0, -1], [0, +1])
     {
-      my @coord = map { $current->{coord}[$_] + $diff->[$_] } 0..1;
+      my @coord = map { $current->{coord}[$_] + $move->[$_] } 0..1;
       next if $done{my $pos_id = "@coord"};
       if (any { $coord[$_] < $dim[$_]{min} || $coord[$_] > $dim[$_]{max} } 0..1)
       {
