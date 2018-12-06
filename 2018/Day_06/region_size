@@ -4,13 +4,14 @@
 
 use v5.14; use warnings; use List::AllUtils qw<minmax max>; use Syntax::Keyword::Junction qw<any>;
 
-my (%dim, %area_size, $region_size);
-my @coord = map {
+my (@coord, %dim, %area_size, $region_size);
+while (<>)
+{
   /(?<x>\d+), (?<y>\d+)/ or die "Unexpected input: $_";
+  push @coord, {x => $+{x}, y => $+{y}};
   @{$dim{$_}}{qw<min max>} = minmax $+{$_} + 0, values %{$dim{$_}} for qw<x y>;
-  $area_size{(state $area_id)++ // 0} = 0;
-  {x => $+{x}, y => $+{y}};
-} <>;
+  $area_size{$#coord} = 0;
+}
 
 for my $x ($dim{x}{min} .. $dim{x}{max})
 {
