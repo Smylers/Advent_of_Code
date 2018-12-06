@@ -2,26 +2,36 @@
 
 # region_size
 
-use v5.14; use warnings; use List::AllUtils qw<minmax>;
+use v5.14; use warnings; use List::AllUtils qw<minmax max>;
 
-my %dim;
+my (%dim, @area_size, $region_size);
 my @coord = map {
   /(?<x>\d+), (?<y>\d+)/ or die "Unexpected input: $_";
   @{$dim{$_}}{qw<min max>} = minmax $+{$_} + 0, values %{$dim{$_}} for qw<x y>;
   {x => $+{x}, y => $+{y}};
 } <>;
 
-my $region_size;
 for my $x ($dim{x}{min} .. $dim{x}{max})
 {
-  POS: for my $y ($dim{y}{min} .. $dim{y}{max})
+  for my $y ($dim{y}{min} .. $dim{y}{max})
   {
-    my $total;
-    foreach (@coord)
+    my ($total, $min_dist, $min_area_id);
+    while (my ($area_id, $pos) = each @coord)
     {
-      next POS if ($total += abs ($_->{x} - $x) + abs ($_->{y} - $y)) >= 10e3;
+      $total += my $dist = abs ($pos->{x} - $x) + abs ($pos->{y} - $y);
+      if (!defined $min_dist || $dist < $min_dist)
+      {
+        $min_dist = $dist;
+        $min_area_id = $area_id;
+      }
+      elsif ($dist == $min_dist)
+      {
+        $min_area_id = undef;
+      }
     }
-    $region_size++;
+    $area_size[$min_area_id]++ if defined $min_area_id;
+    $region_size++ if $total < 10e3;
   }
 }
-say $region_size;
+say 'largest area: ', max @area_size;
+say 'region size:  ', $region_size;
