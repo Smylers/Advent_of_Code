@@ -31,17 +31,14 @@ while (@edge)
       {
         delete $area_size{$current->{area_id}};
       }
-      elsif (exists $next_edge{$pos_id})
-      {
-        if ($next_edge{$pos_id}{area_id} ne $current->{area_id})
-        {
-          delete $next_edge{$pos_id};
-          $done{$pos_id} = 1;
-        }
-      }
-      else
+      elsif (!exists $next_edge{$pos_id})
       {
         $next_edge{$pos_id} = {area_id => $current->{area_id}, coord => \@coord, pos_id => $pos_id};
+      }
+      elsif ($next_edge{$pos_id}{area_id} ne $current->{area_id})
+      {
+        delete $next_edge{$pos_id};
+        $done{$pos_id} = 1;
       }
     }
   }
