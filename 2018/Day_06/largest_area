@@ -4,15 +4,13 @@
 
 use v5.14; use warnings; use List::AllUtils qw<minmax any max>;
 
+my @range = map { {} } 0..1;
 my @edge = map
 {
   my @coord = /(\d+)/g;
+  @{$range[$_]}{qw<min max>} = minmax $coord[$_], values %{$range[$_]} for 0..1;
   {area_id => ++(state $area_id), coord => \@coord, pos_id => "@coord"},
 } <>;
-my @range;
-for my $dimension (0..1) {
-  @{$range[$dimension]}{qw<min max>} = minmax map { $_->{coord}[$dimension] } @edge;
-}
 
 my (%area_size, %done);
 undef @area_size{1..$#edge};
