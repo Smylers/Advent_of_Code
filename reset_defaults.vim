@@ -17,3 +17,4 @@ unmap j
 unmap k
 nnoremap <F4> :set wrap! wrap?<Enter>
 autocmd! vimrc-incsearch-highlight
+GitGutterDisable
