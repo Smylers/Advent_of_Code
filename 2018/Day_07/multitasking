@@ -1,0 +1,34 @@
+#! /usr/bin/perl
+
+# multitasking
+
+use v5.14; use warnings; use List::AllUtils qw<min>;
+
+my (%depends, %running_until);
+while (<>)
+{
+  /Step (.) .* step (.)/g or die;
+  $depends{$1} //= '';
+  $depends{$2} .= $1;
+}
+
+my $available_workers = 5;
+my $time = 0;
+while (1)
+{
+  foreach my $step (sort grep { $depends{$_} eq '' } keys %depends)
+  {
+    last if !$available_workers;
+    $available_workers--;
+    push @{$running_until{$time + (ord $step) - (ord 'A') + 1 + 60}}, $step;
+    delete $depends{$step};
+  }
+last if !%running_until;
+  $time = min keys %running_until;
+  foreach my $finished (@{delete $running_until{$time}})
+  {
+    $depends{$_} =~ s/$finished// foreach keys %depends;
+    $available_workers++;
+  }
+}
+say $time;
