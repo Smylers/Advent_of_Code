@@ -5,7 +5,7 @@ Part 1:
     :%s/\v^Step (.).*step (.).*/\2\1⟨Enter⟩
     l⟨Ctrl+V⟩{lyG2o⟨Esc⟩p:sor u⟨Enter⟩
     :%s/\v^(.).*\zs\n\1⟨Enter⟩
-    qaqqag&@aq@a
+    qaqqag&@aq@a{
 
   Find the first step:
 
