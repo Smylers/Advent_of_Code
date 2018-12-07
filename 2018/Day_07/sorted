@@ -2,8 +2,7 @@
 
 # sorted
 
-use v5.14;
-use warnings;
+use v5.14; use warnings; use List::AllUtils qw<first>;
 
 my %depends;
 while (<>)
@@ -16,7 +15,7 @@ while (<>)
 my $order;
 while (%depends)
 {
-  my $now = (sort grep { $depends{$_} eq '' } keys %depends)[0];
+  my $now = first { $depends{$_} eq '' } sort keys %depends;
   $order .= $now;
   delete $depends{$now};
   $depends{$_} =~ s/$now// foreach keys %depends;
