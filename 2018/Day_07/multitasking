@@ -27,8 +27,9 @@ last if !%running_until;
   $time = min keys %running_until;
   foreach my $finished (@{delete $running_until{$time}})
   {
+    print $finished;
     $depends{$_} =~ s/$finished// foreach keys %depends;
     $available_workers++;
   }
 }
-say $time;
+say " $time";
