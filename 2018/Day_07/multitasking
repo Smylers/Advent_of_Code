@@ -8,7 +8,7 @@ GetOptions('w=i' => \(my $available_workers = 5)) or die "Unrecognized options";
 my (%depends, %running_until);
 while (<>)
 {
-  /Step (.) .* step (.)/g or die;
+  /Step (.) .* step (.)/g or die "Unrecognized input at line $.: $_";
   $depends{$1} //= '';
   $depends{$2} .= $1;
 }
