@@ -1,0 +1,24 @@
+#! /usr/bin/perl
+
+# sorted
+
+use v5.14;
+use warnings;
+
+my %depends;
+while (<>)
+{
+  /\b(\w)\b.*\b(\w)\b/g or die;
+  $depends{$1} //= '';
+  $depends{$2} .= $1;
+}
+
+my $order;
+while (%depends)
+{
+  my $now = (sort grep { $depends{$_} eq '' } keys %depends)[0];
+  $order .= $now;
+  delete $depends{$now};
+  $depends{$_} =~ s/$now// foreach keys %depends;
+}
+say $order;
