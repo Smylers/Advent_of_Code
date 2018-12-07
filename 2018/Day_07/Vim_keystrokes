@@ -4,14 +4,14 @@ Part 1:
 
     :%s/\v^Step (.).*step (.).*/\2\1⟨Enter⟩
     l⟨Ctrl+V⟩{lyG2o⟨Esc⟩p:sor u⟨Enter⟩
-    :%s/\v^(.).*\zs\n\1⟨Enter⟩
-    qaqqag&@aq@a{
+    yyp:%s/\v^(.).*\zs\n\1⟨Enter⟩
+    qaqqag&@aq@a{j
 
   Find the first step:
 
-    qb"zy0:2,$g/^.$/d Z⟨Enter⟩
-    {p:,']sor⟨Enter⟩
-    JylkgJj:,$s/⟨Ctrl+R⟩0⟨Enter⟩q
+    qbvip:g/^.$/m1⟨Enter⟩
+    v}:sor⟨Enter⟩
+    ddpkylkgJjjvip:s/⟨Ctrl+R⟩0⟨Enter⟩q
 
   Further steps by hand:
 
