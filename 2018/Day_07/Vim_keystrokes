@@ -1,0 +1,22 @@
+Part 1:
+
+  Set up:
+
+    :%s/\v^Step (.).*step (.).*/\2\1⟨Enter⟩
+    l⟨Ctrl+V⟩{lyG2o⟨Esc⟩p:sor u⟨Enter⟩
+    :%s/\v^(.).*\zs\n\1⟨Enter⟩
+    qaqqag&@aq@a
+
+  Find the first step:
+
+    qb"zy0:2,$g/^.$/d Z⟨Enter⟩
+    {p:,']sor⟨Enter⟩
+    JylkgJj:,$s/⟨Ctrl+R⟩0⟨Enter⟩q
+
+  Further steps by hand:
+
+    @b @@
+
+  All of them:
+
+    qcqqc@b:redr|sl100m⟨Enter⟩@cq@c
