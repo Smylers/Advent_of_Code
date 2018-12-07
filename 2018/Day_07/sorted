@@ -8,7 +8,7 @@ use warnings;
 my %depends;
 while (<>)
 {
-  /\b(\w)\b.*\b(\w)\b/g or die;
+  /Step (.) .* step (.)/g or die;
   $depends{$1} //= '';
   $depends{$2} .= $1;
 }
