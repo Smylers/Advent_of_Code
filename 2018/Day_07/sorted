@@ -12,12 +12,10 @@ while (<>)
   $depends{$2} .= $1;
 }
 
-my $order;
 while (%depends)
 {
-  my $now = first { $depends{$_} eq '' } sort keys %depends;
-  $order .= $now;
+  print my $now = first { $depends{$_} eq '' } sort keys %depends;
   delete $depends{$now};
   $depends{$_} =~ s/$now// foreach keys %depends;
 }
-say $order;
+say '';
