@@ -10,5 +10,5 @@ sub metadata_sum($data)
 {
   my $num_children = shift @$data;
   my $num_metadata = shift @$data;
-  sum +(map { metadata_sum($data) } 1 .. $num_children), map { shift @$data } 1 .. $num_metadata;
+  sum +(map { metadata_sum($data) } 1 .. $num_children), splice @$data, 0, $num_metadata;
 }
