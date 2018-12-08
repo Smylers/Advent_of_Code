@@ -1,0 +1,14 @@
+#! /usr/bin/perl
+
+# sum_metadata
+
+use v5.20; use warnings; use experimental qw<signatures>; use List::AllUtils qw<sum>;
+
+say metadata_sum([split ' ', <>]);
+
+sub metadata_sum($data)
+{
+  my $num_children = shift @$data;
+  my $num_metadata = shift @$data;
+  sum +(map { metadata_sum($data) } 1 .. $num_children), map { shift @$data } 1 .. $num_metadata;
+}
