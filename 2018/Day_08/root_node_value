@@ -1,0 +1,17 @@
+#! /usr/bin/perl
+
+# root_node_value
+
+use v5.20; use warnings; no warnings qw<uninitialized>; use experimental qw<signatures>;
+use List::AllUtils qw<sum>;
+
+say node_value([split ' ', <>]);
+
+sub node_value($data)
+{
+  my $num_children = shift @$data;
+  my $num_metadata = shift @$data;
+  my @child_value  = (0, map { node_value($data) } 1 .. $num_children);
+  my @metadata     = splice @$data, 0, $num_metadata;
+  sum $num_children ? @child_value[@metadata] : sum @metadata;
+}
