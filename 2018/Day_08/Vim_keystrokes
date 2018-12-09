@@ -1,13 +1,13 @@
 Part 1:
 
-    O0⟨Enter⟩⟨Esc⟩jo⟨Esc⟩k
+    O0⟨Enter⟩⟨Esc⟩j
 
     qaqqbqqa:redr⟨Enter⟩
-    wdwo⟨Ctrl+R⟩-⟨Esc⟩-
+    wdwGo⟨Ctrl+R⟩-⟨Esc⟩⟨Ctrl+O⟩0
     ⟨Ctrl+A⟩yiwdwk:norm⟨Ctrl+R⟩0a@a⟨Enter⟩0xrjD@-
-    j⟨Ctrl+A⟩yiwD:norm⟨Ctrl+R⟩0a@b⟨Enter⟩0xrky$dd@0
+    G⟨Ctrl+A⟩yiwD:norm⟨Ctrl+R⟩0a@b⟨Enter⟩0xr⟨Ctrl+O⟩Ddd@-
     q
     qb⟨Ctrl+A⟩yiwdwgg:norm⟨Ctrl+R⟩0⟨Ctrl+A⟩⟨Enter⟩⟨Ctrl+X⟩⟨Ctrl+O⟩q
-    18u0
+    19u0
 
     @a
