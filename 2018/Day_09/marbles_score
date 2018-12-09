@@ -7,7 +7,7 @@ use v5.14; use warnings; use List::AllUtils qw<max>;
 my ($NumPlayers, $MaxMarble) = @ARGV;
 my @circle = (0);
 my $current_marble = 0;
-my %score;
+my @score;
 for my $turn (1 .. $MaxMarble) {
   if ($turn % 23)
   {
@@ -17,7 +17,8 @@ for my $turn (1 .. $MaxMarble) {
   else
   {
     $current_marble = ($current_marble - 7) % @circle;
-    $score{$turn % $NumPlayers} += $turn + splice @circle, $current_marble, 1;
+    $score[$turn % $NumPlayers] += $turn + splice @circle, $current_marble, 1;
   }
 }
-say max values %score;
+no warnings qw<uninitialized>;
+say max @score;
