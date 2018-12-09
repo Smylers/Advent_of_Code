@@ -27,6 +27,7 @@ inoremap <C-B><C-W> ⟨Ctrl+W⟩
 inoremap <C-B><C-X> ⟨Ctrl+X⟩
 inoremap <C-B><C-Y> ⟨Ctrl+Y⟩
 inoremap <C-B><C-Z> ⟨Ctrl+Z⟩
+inoremap <C-B><BS>  ⟨BkSpc⟩
 inoremap <C-B><Up>    ⟨Up⟩
 inoremap <C-B><Down>  ⟨Down⟩
 inoremap <C-B><Left>  ⟨Left⟩
