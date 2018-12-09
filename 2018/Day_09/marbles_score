@@ -5,19 +5,22 @@
 use v5.14; use warnings; use List::AllUtils qw<max>;
 
 my ($NumPlayers, $MaxMarble) = @ARGV;
-my @circle = (0);
-my $current_marble = 0;
+my $current_marble = {value => 0};
+$current_marble->{next} = $current_marble->{prev} = $current_marble;
 my @score;
 for my $turn (1 .. $MaxMarble) {
   if ($turn % 23)
   {
-    $current_marble = ($current_marble + 1) % @circle + 1;
-    splice @circle, $current_marble, 0, $turn;
+    $current_marble = $current_marble->{next};
+    $current_marble = {value => $turn, prev => $current_marble, next => $current_marble->{next}};
+    $current_marble->{prev}{next} = $current_marble->{next}{prev} = $current_marble;
   }
   else
   {
-    $current_marble = ($current_marble - 7) % @circle;
-    $score[$turn % $NumPlayers] += $turn + splice @circle, $current_marble, 1;
+    $current_marble = $current_marble->{prev} for 1 .. 7;
+    $score[$turn % $NumPlayers] += $turn + $current_marble->{value};
+    $current_marble->{next}{prev} = $current_marble->{prev};
+    $current_marble = $current_marble->{prev}{next} = $current_marble->{next};
   }
 }
 no warnings qw<uninitialized>;
