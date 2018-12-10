@@ -6,14 +6,14 @@ use utf8; use v5.20; use warnings; use experimental qw<signatures>;
 use Getopt::Long; use Time::HiRes qw<sleep>; use List::AllUtils qw<minmax>;
 GetOptions('s=i' => \(my $time = 1), 'w=i' => \(my $MaxWidth = 80)) or die "$0: Unrecognized options\n";
 
-my %sky = (point => [map { my %rec; @rec{qw<x y  Δx Δy>} = /(-?\d+)/g; \%rec } <>]);
-
 sub tick($sky, $dim, $ticks = 1)
 {
   $_->{$dim} += $_->{"Δ$dim"} * $ticks foreach @{$sky->{point}};
   my ($min, $max) = minmax map { $_->{$dim} }  @{$sky->{point}};
   $sky->{$dim} = {min => $min, size => $max - $min + 1};
 }
+
+my %sky = (point => [map { my %rec; @rec{qw<x y  Δx Δy>} = /(-?\d+)/g; \%rec } <>]);
 
 tick(\%sky, 'x', $time);
 while ($sky{x}{size} > $MaxWidth)
