@@ -1,0 +1,34 @@
+#! /usr/bin/perl
+
+# show_message
+
+use utf8; use v5.14; use warnings; use Time::HiRes qw<sleep>; use List::AllUtils qw<minmax>;
+
+my %sky = (point => [map { my %rec; @rec{qw<x y  Δx Δy>} = /(-?\d+)/g; \%rec } <>]);
+
+sub tick
+{
+  my ($sky, $dim, $ticks) = @_;
+  $ticks //= 1;
+  $_->{$dim} += $_->{"Δ$dim"} * $ticks foreach @{$sky->{point}};
+  my ($min, $max) = minmax map { $_->{$dim} }  @{$sky->{point}};
+  $sky->{$dim} = {min => $min, size => $max - $min + 1};
+}
+
+my $time = 10e3;
+tick(\%sky, 'y', $time);
+while ($sky{y}{size} > 24)
+{
+  $time++;
+  tick(\%sky, 'y');
+}
+tick(\%sky, 'x', $time);
+do
+{
+  my @line = (' ' x $sky{x}{size}) x $sky{y}{size};
+  substr $line[$_->{y} - $sky{y}{min}], $_->{x} - $sky{x}{min}, 1, '#' foreach @{$sky{point}};
+  say for @line, $time;
+  sleep 0.3;
+  $time++;
+  tick(\%sky, $_) foreach qw<x y>;
+} until $sky{y}{size} > 24;
