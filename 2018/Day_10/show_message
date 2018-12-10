@@ -2,8 +2,9 @@
 
 # show_message
 
-use utf8; use v5.14; use warnings; use Time::HiRes qw<sleep>; use List::AllUtils qw<minmax>;
+use utf8; use v5.14; use warnings; use Getopt::Long; use Time::HiRes qw<sleep>; use List::AllUtils qw<minmax>;
 
+GetOptions('s=i' => \(my $time = 1)) or die "$0: Unrecognized options\n";
 my %sky = (point => [map { my %rec; @rec{qw<x y  Δx Δy>} = /(-?\d+)/g; \%rec } <>]);
 
 sub tick
@@ -15,7 +16,6 @@ sub tick
   $sky->{$dim} = {min => $min, size => $max - $min + 1};
 }
 
-my $time = 10e3;
 tick(\%sky, 'y', $time);
 while ($sky{y}{size} > 24)
 {
