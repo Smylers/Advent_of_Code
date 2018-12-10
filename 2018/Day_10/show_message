@@ -6,7 +6,7 @@ use utf8; use v5.20; use warnings; use experimental qw<signatures>;
 use Getopt::Long; use Time::HiRes qw<sleep>; use List::AllUtils qw<minmax>;
 GetOptions('s=i' => \(my $time = 1), 'w=i' => \(my $MaxWidth = 80)) or die "$0: Unrecognized options\n";
 
-sub tick($sky, $dim, $ticks = 1)
+sub tick($sky, $dim, $ticks = 1)   # Move the sky on that many ticks in x or y.
 {
   $_->{$dim} += $_->{"Δ$dim"} * $ticks foreach @{$sky->{point}};
   my ($min, $max) = minmax map { $_->{$dim} }  @{$sky->{point}};
@@ -15,19 +15,19 @@ sub tick($sky, $dim, $ticks = 1)
 
 my %sky = (point => [map { my %rec; @rec{qw<x y  Δx Δy>} = /(-?\d+)/g; \%rec } <>]);
 
-tick(\%sky, 'x', $time);
-while ($sky{x}{size} > $MaxWidth)
+tick(\%sky, 'x', $time);           # Skip past these ticks.
+while ($sky{x}{size} > $MaxWidth)  # Iterate till it fits in a terminal.
 {
   $time++;
-  tick(\%sky, 'x');
+  tick(\%sky, 'x');                # Only need to calculate x for checking.
 }
-tick(\%sky, 'y', $time);
+tick(\%sky, 'y', $time);           # Now for displaying, skip y to same time.
 do
 {
   my @line = (' ' x $sky{x}{size}) x $sky{y}{size};
   substr $line[$_->{y} - $sky{y}{min}], $_->{x} - $sky{x}{min}, 1, '#' foreach @{$sky{point}};
   say for @line, $time;
-  sleep 0.3;
+  sleep 0.3;                       # Slow enough to notice a message.
   $time++;
   tick(\%sky, $_) foreach qw<x y>;
-} until $sky{x}{size} > $MaxWidth;
+} until $sky{x}{size} > $MaxWidth; # Stop once it's got too wide again.
