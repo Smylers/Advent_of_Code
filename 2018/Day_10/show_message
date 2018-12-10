@@ -16,13 +16,13 @@ sub tick
   $sky->{$dim} = {min => $min, size => $max - $min + 1};
 }
 
-tick(\%sky, 'y', $time);
-while ($sky{y}{size} > 24)
+tick(\%sky, 'x', $time);
+while ($sky{x}{size} > 80)
 {
   $time++;
-  tick(\%sky, 'y');
+  tick(\%sky, 'x');
 }
-tick(\%sky, 'x', $time);
+tick(\%sky, 'y', $time);
 do
 {
   my @line = (' ' x $sky{x}{size}) x $sky{y}{size};
@@ -31,4 +31,4 @@ do
   sleep 0.3;
   $time++;
   tick(\%sky, $_) foreach qw<x y>;
-} until $sky{y}{size} > 24;
+} until $sky{x}{size} > 80;
