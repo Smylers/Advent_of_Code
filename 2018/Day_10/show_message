@@ -4,7 +4,7 @@
 
 use utf8; use v5.14; use warnings; use Getopt::Long; use Time::HiRes qw<sleep>; use List::AllUtils qw<minmax>;
 
-GetOptions('s=i' => \(my $time = 1)) or die "$0: Unrecognized options\n";
+GetOptions('s=i' => \(my $time = 1), 'w=i' => \(my $MaxWidth = 80)) or die "$0: Unrecognized options\n";
 my %sky = (point => [map { my %rec; @rec{qw<x y  Δx Δy>} = /(-?\d+)/g; \%rec } <>]);
 
 sub tick
@@ -17,7 +17,7 @@ sub tick
 }
 
 tick(\%sky, 'x', $time);
-while ($sky{x}{size} > 80)
+while ($sky{x}{size} > $MaxWidth)
 {
   $time++;
   tick(\%sky, 'x');
@@ -31,4 +31,4 @@ do
   sleep 0.3;
   $time++;
   tick(\%sky, $_) foreach qw<x y>;
-} until $sky{x}{size} > 80;
+} until $sky{x}{size} > $MaxWidth;
