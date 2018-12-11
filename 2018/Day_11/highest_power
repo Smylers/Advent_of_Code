@@ -2,7 +2,7 @@
 
 # highest_power
 
-use v5.14; use warnings; use Syntax::Keyword::Junction qw<any>; use List::AllUtils qw<sum>;
+use v5.14; use warnings; use List::AllUtils qw<max sum>;
 
 my ($serial_num) = @ARGV;
 my (@row, $highest_power, $highest_power_pos);
@@ -12,13 +12,13 @@ for my $x (reverse 1 .. 300)
   for my $y (reverse 1 .. 300)
   {
     $row[$x][$y] = ($rack_id * $y + $serial_num) * $rack_id / 100 % 10 - 5;
-    unless ((any $x, $y) >= 299)
+    for my $size (0 .. 300 - max $x, $y)
     {
-      my $square_power = sum map { @{$row[$_]}[$y .. $y + 2] } $x .. $x + 2;
+      my $square_power = sum map { @{$row[$_]}[$y .. $y + $size] } $x .. $x + $size;
       if (!defined $highest_power || $square_power > $highest_power)
       {
         $highest_power = $square_power;
-        $highest_power_pos = "$x,$y";
+        $highest_power_pos = "$x,$y,$size";
       }
     }
   }
