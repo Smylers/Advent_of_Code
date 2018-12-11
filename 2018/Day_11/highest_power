@@ -5,7 +5,7 @@
 use v5.14; use warnings; no warnings qw<uninitialized>;
 
 my ($serial_num) = @ARGV;
-my @sum;
+my (@sum, %max);
 for my $x (1 .. 300)
 {
   my $rack_id = $x + 10;
@@ -14,18 +14,12 @@ for my $x (1 .. 300)
     $sum[$x][$y] = ($rack_id * $y + $serial_num) * $rack_id / 100 % 10 - 5 + $sum[$x][$y - 1] + $sum[$x - 1][$y] - $sum[$x - 1][$y - 1];
   }
 }
-
-my ($highest_power, $highest_power_pos);
 for my $x (1 .. 298)
 {
   for my $y (1 .. 298)
   {
     my $square_power = $sum[$x + 2][$y + 2] - $sum[$x + 2][$y - 1] - $sum[$x - 1][$y + 2] + $sum[$x - 1][$y - 1];
-    if (!defined $highest_power || $square_power > $highest_power)
-    {
-      $highest_power = $square_power;
-      $highest_power_pos = "$x,$y";
-    }
+    %max = (power => $square_power, pos => "$x,$y") if !defined $max{power} || $square_power > $max{power};
   }
 }
-say $highest_power_pos;
+say $max{pos};
