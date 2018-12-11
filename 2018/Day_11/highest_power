@@ -18,8 +18,8 @@ for my $x (1 .. 298)
 {
   for my $y (1 .. 298)
   {
-    my $square_power = $sum[$x + 2][$y + 2] - $sum[$x + 2][$y - 1] - $sum[$x - 1][$y + 2] + $sum[$x - 1][$y - 1];
-    %max = (power => $square_power, pos => "$x,$y") if !defined $max{power} || $square_power > $max{power};
+    my $power = $sum[$x + 2][$y + 2] - $sum[$x + 2][$y - 1] - $sum[$x - 1][$y + 2] + $sum[$x - 1][$y - 1];
+    %max = (power => $power, pos => "$x,$y") if !defined $max{power} || $power > $max{power};
   }
 }
 say $max{pos};
