@@ -22,8 +22,9 @@ for my $size (0 .. 299)
     for my $y (1 .. 300 - $size)
     {
       my $power = $sum[$x + $size][$y + $size] - $sum[$x + $size][$y - 1] - $sum[$x - 1][$y + $size] + $sum[$x - 1][$y - 1];
-      $max{any} = {power => $power, pos => "$x,$y," . ($size + 1)} if !defined $max{any}{power} || $power > $max{any}{power};
+      $max{3  } = {power => $power, pos => "$x,$y"} if $size == 2 && (!defined $max{3  }{power} || $power > $max{3  }{power});
+      $max{any} = {power => $power, pos => "$x,$y," . ($size + 1)} if !defined $max{any}{power} || $power > $max{any}{power} ;
     }
   }
 }
-say $max{any}{pos};
+say $max{$_}{pos} for qw<3 any>;
