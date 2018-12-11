@@ -11,7 +11,8 @@ for my $x (1 .. 300)
   my $rack_id = $x + 10;
   for my $y (1 .. 300)
   {
-    $sum[$x][$y] = ($rack_id * $y + $serial_num) * $rack_id / 100 % 10 - 5 + $sum[$x][$y - 1] + $sum[$x - 1][$y] - $sum[$x - 1][$y - 1];
+    my $power = ($rack_id * $y + $serial_num) * $rack_id / 100 % 10 - 5;
+    $sum[$x][$y] = $power + $sum[$x][$y - 1] + $sum[$x - 1][$y] - $sum[$x - 1][$y - 1];
   }
 }
 for my $x (1 .. 298)
