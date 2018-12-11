@@ -15,12 +15,15 @@ for my $x (1 .. 300)
     $sum[$x][$y] = $power + $sum[$x][$y - 1] + $sum[$x - 1][$y] - $sum[$x - 1][$y - 1];
   }
 }
-for my $x (1 .. 298)
+for my $size (0 .. 299)
 {
-  for my $y (1 .. 298)
+  for my $x (1 .. 300 - $size)
   {
-    my $power = $sum[$x + 2][$y + 2] - $sum[$x + 2][$y - 1] - $sum[$x - 1][$y + 2] + $sum[$x - 1][$y - 1];
-    %max = (power => $power, pos => "$x,$y") if !defined $max{power} || $power > $max{power};
+    for my $y (1 .. 300 - $size)
+    {
+      my $power = $sum[$x + $size][$y + $size] - $sum[$x + $size][$y - 1] - $sum[$x - 1][$y + $size] + $sum[$x - 1][$y - 1];
+      %max = (power => $power, pos => "$x,$y," . ($size + 1)) if !defined $max{power} || $power > $max{power};
+    }
   }
 }
 say $max{pos};
