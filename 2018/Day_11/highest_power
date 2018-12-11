@@ -2,24 +2,29 @@
 
 # highest_power
 
-use v5.14; use warnings; use List::AllUtils qw<max sum>;
+use v5.14; use warnings; no warnings qw<uninitialized>;
 
 my ($serial_num) = @ARGV;
-my (@row, $highest_power, $highest_power_pos);
-for my $x (reverse 1 .. 300)
+my @sum;
+for my $x (1 .. 300)
 {
   my $rack_id = $x + 10;
-  for my $y (reverse 1 .. 300)
+  for my $y (1 .. 300)
   {
-    $row[$x][$y] = ($rack_id * $y + $serial_num) * $rack_id / 100 % 10 - 5;
-    for my $size (0 .. 300 - max $x, $y)
+    $sum[$x][$y] = ($rack_id * $y + $serial_num) * $rack_id / 100 % 10 - 5 + $sum[$x][$y - 1] + $sum[$x - 1][$y] - $sum[$x - 1][$y - 1];
+  }
+}
+
+my ($highest_power, $highest_power_pos);
+for my $x (1 .. 298)
+{
+  for my $y (1 .. 298)
+  {
+    my $square_power = $sum[$x + 2][$y + 2] - $sum[$x + 2][$y - 1] - $sum[$x - 1][$y + 2] + $sum[$x - 1][$y - 1];
+    if (!defined $highest_power || $square_power > $highest_power)
     {
-      my $square_power = sum map { @{$row[$_]}[$y .. $y + $size] } $x .. $x + $size;
-      if (!defined $highest_power || $square_power > $highest_power)
-      {
-        $highest_power = $square_power;
-        $highest_power_pos = "$x,$y,$size";
-      }
+      $highest_power = $square_power;
+      $highest_power_pos = "$x,$y";
     }
   }
 }
