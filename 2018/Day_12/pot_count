@@ -18,9 +18,5 @@ for my $gen (1 .. 20)
   s/[OX]/x/g;
 }
 my $sum;
-foreach (split //)
-{
-  $sum += $offset if $_ eq 'x';
-  $offset++;
-}
+$sum += $offset++ * ($_ eq 'x') foreach split //;
 say $sum;
