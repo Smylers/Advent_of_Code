@@ -7,9 +7,10 @@ use warnings;
 use List::AllUtils qw<sum>;
 
 $_ = <> =~ /([#.]+)/ && $1 =~ tr/#./xo/r;
-my $offset = 0;
+
 my $rule = join '|', map { tr/#./xo/; /^(..)(.)(..)/; "(?<=$1)$2(?=$3)" } grep { /#$/ } <>;
 
+my $offset = 0;
 for my $gen (1 .. 20)
 {
   s/^(o{0,2})(?=x)/ooo/ and $offset -= 3 - length $1;
