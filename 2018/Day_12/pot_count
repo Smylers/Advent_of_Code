@@ -6,12 +6,12 @@ use v5.14;
 use warnings;
 
 $_ = <> =~ /([#.]+)/ && $1 =~ tr/#./xo/r;
-my $zero = 0;
+my $offset = 0;
 my $rule = join '|', map { tr/#./xo/; /^(..)(.)(..)/; "(?<=$1)$2(?=$3)" } grep { /#$/ } <>;
 
 for my $gen (1 .. 20)
 {
-  s/^(o{0,2})(?=x)/ooo/ and $zero += 3 - length $1;
+  s/^(o{0,2})(?=x)/ooo/ and $offset -= 3 - length $1;
   s/(?<=x)o{0,2}$/ooo/;
   s/$rule/\u$&/gi;
   s/[ox]/o/g;
@@ -20,6 +20,6 @@ for my $gen (1 .. 20)
 my $sum;
 foreach my $pos (0 .. (length) - 1)
 {
-  $sum += $pos - $zero if (substr $_, $pos, 1) eq 'x';
+  $sum += $pos + $offset if (substr $_, $pos, 1) eq 'x';
 }
 say $sum;
