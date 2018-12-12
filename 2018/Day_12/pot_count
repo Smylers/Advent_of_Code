@@ -7,17 +7,13 @@ use warnings;
 
 my $state = <> =~ /([#.]+)/ && $1 =~ tr/#./xo/r;
 my $zero = 0;
-#$zero += 2 - length $1;
 my @rule = map { tr/#./xo/; /^(..)(.)(..)/; qr/(?i:$1)\K($2)(?=(?i)$3)/ } grep { /#$/ } <>;
-say $zero;
-say $state;
+
 for (1 .. 20)
 {
   $state =~ s/^(o{0,2})(?=x)/ooo/ and $zero += 3 - length $1;
   $state =~ s/(?<=x)o{0,2}$/ooo/;
   $state =~ s/$_/\u$1/g foreach @rule;
-  #$state =~ s/(?:ox)\Ko(?=(?i)oo)/\u$&/g;
-  #say $state =~ tr/xo/#./r;
   $state =~ s/[ox]/o/g;
   $state =~ s/[OX]/x/g;
   say $state =~ tr/xo/#./r;
