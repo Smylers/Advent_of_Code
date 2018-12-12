@@ -2,10 +2,13 @@
 
 # pot_sum
 
-use v5.14;
+use v5.20;
 use warnings;
+use experimental qw<signatures>;
 use Getopt::Long qw<GetOptions>; use List::AllUtils qw<sum>;
 GetOptions('n=i' => \(my $MaxGen = 20)) or die "$0: Unrecognized options\n";
+
+sub plant_sum($pots, $pos) { sum map { $pos++ * ($_ eq 'x') } split //, $pots }
 
 $_ = <> =~ /([#.]+)/ && $1 =~ tr/#./xo/r;
 
@@ -20,4 +23,4 @@ for my $gen (1 .. $MaxGen)
   s/[ox]/o/g;
   s/[OX]/x/g;
 }
-say sum map { $offset++ * ($_ eq 'x') } split //;
+say plant_sum($_, $offset);
