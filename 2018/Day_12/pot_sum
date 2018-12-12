@@ -14,8 +14,8 @@ my $rule = join '|', map { tr/#./xo/; /^(..)(.)(..)/; "(?<=$1)$2(?=$3)" } grep {
 my $offset = 0;
 for my $gen (1 .. $MaxGen)
 {
-  s/^(o{0,2})(?=x)/ooo/ and $offset -= 3 - length $1;
-  s/(?<=x)o{0,2}$/ooo/;
+  s/^o*/ooo/; $offset -= 3 - length $&;
+  s/o*$/ooo/;
   s/$rule/\u$&/gi;
   s/[ox]/o/g;
   s/[OX]/x/g;
