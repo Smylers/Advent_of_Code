@@ -10,11 +10,11 @@ GetOptions('n=i' => \(my $MaxGen = 20)) or die "$0: Unrecognized options\n";
 
 sub plant_sum($pots, $pos) { sum map { $pos++ * ($_ eq 'x') } split //, $pots }
 
-$_ = <> =~ /([#.]+)/ && $1 =~ tr/#./xo/r;
+$_ = <> =~ /([#.]+)/ && $1 =~ tr/#./xo/r;  # Switch to o/x for empty/plant
 
 my $rule = join '|', map { tr/#./xo/; /^(..)(.)(..)/; "(?<=$1)$2(?=$3)" } grep { /#$/ } <>;
 
-my $offset = 0;
+my $offset = 0;  # Number of the leftmost pot in our string
 for my $gen (1 .. $MaxGen)
 {
   s/^o*/ooo/; $offset -= 3 - length $&;
@@ -24,11 +24,11 @@ for my $gen (1 .. $MaxGen)
   $prev{sum}  = plant_sum($_, $offset)  if $_ eq ($prev{pots} // '');
   $prev{pots} = $_;
 
-  s/$rule/\u$&/gi;
-  s/[ox]/o/g;
-  s/[OX]/x/g;
+  s/$rule/\u$&/gi;  # Mark all matching pots with upper-case
+  s/[ox]/o/g;       # Any still lower-case become empty
+  s/[OX]/x/g;       # Any upper-case get a plant
 
-  if (defined $prev{sum})
+  if (defined $prev{sum})  # If prev iterations match, extrapolate answer:
   {
     my $sum = plant_sum($_, $offset);
     say $sum + ($sum - $prev{sum}) * ($MaxGen - $gen);
