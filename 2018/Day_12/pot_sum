@@ -19,8 +19,20 @@ for my $gen (1 .. $MaxGen)
 {
   s/^o*/ooo/; $offset -= 3 - length $&;
   s/o*$/ooo/;
+
+  state %prev;
+  $prev{sum}  = plant_sum($_, $offset)  if $_ eq ($prev{pots} // '');
+  $prev{pots} = $_;
+
   s/$rule/\u$&/gi;
   s/[ox]/o/g;
   s/[OX]/x/g;
+
+  if (defined $prev{sum})
+  {
+    my $sum = plant_sum($_, $offset);
+    say $sum + ($sum - $prev{sum}) * ($MaxGen - $gen);
+    exit;
+  }
 }
 say plant_sum($_, $offset);
