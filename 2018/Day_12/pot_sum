@@ -14,14 +14,14 @@ $_ = <> =~ /([#.]+)/ && $1 =~ tr/#./xo/r;  # Switch to o/x for empty/plant
 
 my $rule = join '|', map { tr/#./xo/; /^(..)(.)(..)/; "(?<=$1)$2(?=$3)" } grep { /#$/ } <>;
 
-my $offset = 0;  # Number of the leftmost pot in our string
+my $min_pot = 0;  # Number of the leftmost pot in our string
 for my $gen (1 .. $MaxGen)
 {
-  s/^o*/ooo/; $offset -= 3 - length $&;
+  s/^o*/ooo/; $min_pot -= 3 - length $&;
   s/o*$/ooo/;
 
   state %prev;
-  $prev{sum}  = plant_sum($_, $offset)  if $_ eq ($prev{pots} // '');
+  $prev{sum}  = plant_sum($_, $min_pot)  if $_ eq ($prev{pots} // '');
   $prev{pots} = $_;
 
   s/$rule/\u$&/gi;  # Mark all matching pots with upper-case
@@ -30,9 +30,9 @@ for my $gen (1 .. $MaxGen)
 
   if (defined $prev{sum})  # If prev iterations match, extrapolate answer:
   {
-    my $sum = plant_sum($_, $offset);
+    my $sum = plant_sum($_, $min_pot);
     say $sum + ($sum - $prev{sum}) * ($MaxGen - $gen);
     exit;
   }
 }
-say plant_sum($_, $offset);
+say plant_sum($_, $min_pot);
