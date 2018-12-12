@@ -4,6 +4,7 @@
 
 use v5.14;
 use warnings;
+use List::AllUtils qw<sum>;
 
 $_ = <> =~ /([#.]+)/ && $1 =~ tr/#./xo/r;
 my $offset = 0;
@@ -17,6 +18,4 @@ for my $gen (1 .. 20)
   s/[ox]/o/g;
   s/[OX]/x/g;
 }
-my $sum;
-$sum += $offset++ * ($_ eq 'x') foreach split //;
-say $sum;
+say sum map { $offset++ * ($_ eq 'x') } split //;
