@@ -13,8 +13,8 @@ say $zero;
 say $state;
 for (1 .. 20)
 {
-  $state =~ s/^(o{0,1})(?=x)/oo/ and $zero += 2 - length $1;
-  $state =~ s/(?<=x)o?$/oo/;
+  $state =~ s/^(o{0,2})(?=x)/ooo/ and $zero += 3 - length $1;
+  $state =~ s/(?<=x)o{0,2}$/ooo/;
   $state =~ s/$_/\u$1/g foreach @rule;
   #$state =~ s/(?:ox)\Ko(?=(?i)oo)/\u$&/g;
   #say $state =~ tr/xo/#./r;
