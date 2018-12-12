@@ -7,7 +7,7 @@ use warnings;
 
 my $state = <> =~ /([#.]+)/ && $1 =~ tr/#./xo/r;
 my $zero = 0;
-my @rule = map { tr/#./xo/; /^(..)(.)(..)/; qr/(?i:$1)\K($2)(?=(?i)$3)/ } grep { /#$/ } <>;
+my @rule = map { tr/#./xo/; /^(..)(.)(..)/; qr/(?<=(?i)$1)($2)(?=(?i)$3)/ } grep { /#$/ } <>;
 
 for (1 .. 20)
 {
