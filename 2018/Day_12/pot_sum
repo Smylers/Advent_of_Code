@@ -4,14 +4,15 @@
 
 use v5.14;
 use warnings;
-use List::AllUtils qw<sum>;
+use Getopt::Long qw<GetOptions>; use List::AllUtils qw<sum>;
+GetOptions('n=i' => \(my $MaxGen = 20)) or die "$0: Unrecognized options\n";
 
 $_ = <> =~ /([#.]+)/ && $1 =~ tr/#./xo/r;
 
 my $rule = join '|', map { tr/#./xo/; /^(..)(.)(..)/; "(?<=$1)$2(?=$3)" } grep { /#$/ } <>;
 
 my $offset = 0;
-for my $gen (1 .. 20)
+for my $gen (1 .. $MaxGen)
 {
   s/^(o{0,2})(?=x)/ooo/ and $offset -= 3 - length $1;
   s/(?<=x)o{0,2}$/ooo/;
