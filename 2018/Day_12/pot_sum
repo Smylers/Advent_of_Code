@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 
-# pot_count
+# pot_sum
 
 use v5.14;
 use warnings;
