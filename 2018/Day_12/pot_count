@@ -16,7 +16,6 @@ for my $gen (1 .. 20)
   s/$rule/\u$&/gi;
   s/[ox]/o/g;
   s/[OX]/x/g;
-  say tr/xo/#./r;
 }
 my $sum;
 foreach my $pos (0 .. (length) - 1)
