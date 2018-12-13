@@ -1,0 +1,66 @@
+#! /usr/bin/perl
+
+# cart_crash
+
+use v5.14;
+use warnings;
+use List::AllUtils qw<sort_by>; use Scalar::Keyword::Junction qw<any>;
+
+my @turn = qw[< v > ^];
+my %turn_num = map { $turn[$_] => $_ } 0 .. $#turn;
+my (@track, @cart);
+while (<>)
+{
+  push @cart, {y => scalar @track, x => (pos) - 1, dir => $1, turn => 0} while /([<v>^])/g;
+  push @track, [split //,  s/[<>]/-/gr =~ s/[v^]/|/gr];
+}
+my %cart_pos = map { ("$_->{x},$_->{y}" => 1) } @cart;
+
+use DDP;
+p @track;
+p %cart_pos;
+p @turn;
+p %turn_num;
+while (1)
+{
+  foreach (sort_by { @{$_}{qw<y x>} } @cart)
+  {
+    $cart_pos{"$_->{x},$_->{y}"}--;
+    $_->{x}-- if $_->{dir} eq '<';
+    $_->{x}++ if $_->{dir} eq '>';
+    $_->{y}-- if $_->{dir} eq '^';
+    $_->{y}++ if $_->{dir} eq 'v';
+    if ($cart_pos{"$_->{x},$_->{y}"}++)
+    {
+      say "Crash at $_->{x},$_->{y}";
+      last;
+    }
+    my $next_track = $track[$_->{y}][$_->{x}];
+    my $rel_turn = 0;
+    $rel_turn = 1 if $next_track = '/' && $_->{dir} eq any qw<;
+   /
+    <  v
+    v  <
+    >  ^
+    ^  <
+  }
+}
+    
+__END__
+    
+  foreach (split //)
+  {
+    
+__END__
+
+0: stay same
+1  ^<  <v  v>  >^
+2 >^  ^<  <v  v>
+
+ 1  0  0
+ 0 -1 -1
+-1  1 -2
+
+$dir = ($dir + $turn) % 4;
+$turn = $turn % 3 - 1;
+
