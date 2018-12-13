@@ -4,7 +4,7 @@
 
 use v5.14;
 use warnings;
-use List::AllUtils qw<nsort_by>;
+use Sort::Key::Multi qw<ii_keysort>;
 
 my %movement =
 (
@@ -23,7 +23,7 @@ my %cart_pos = map { ("@{$_->{pos}}" => 1) } @cart;
 
 while (1)
 {
-  foreach (nsort_by { @{$_->{pos}}[1,0] } @cart)
+  foreach (ii_keysort { @{$_->{pos}}[1, 0] } @cart)
   {
     $cart_pos{"@{$_->{pos}}"}--;
     $_->{pos}[$_->{axis}] += $_->{delta};
