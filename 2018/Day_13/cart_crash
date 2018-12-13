@@ -6,7 +6,7 @@ use v5.14;
 use warnings;
 use Sort::Key::Multi qw<ii_keysort>;
 
-my %movement =
+my %dir =
 (
   '<' => {axis => 0, delta => -1},
   '>' => {axis => 0, delta => +1},
@@ -19,7 +19,7 @@ while (<>)
   while (/([<v>^])/g)
   {
     (state $id)++;
-    $cart{$id} = {id => $id, pos => [(pos) - 1, scalar @track], %{$movement{$1}}, junction_turn => 1};
+    $cart{$id} = {id => $id, pos => [(pos) - 1, scalar @track], %{$dir{$1}}, junction_turn => 1};
     $cart_pos{"@{$cart{$id}{pos}}"} = $id;
   }
   push @track, [split //,  s/[<>]/-/gr =~ s/[v^]/|/gr];
