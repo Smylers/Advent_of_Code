@@ -29,15 +29,18 @@ while (keys %cart > 1)
 {
   foreach (my @sorted = ii_keysort { @{$_->{pos}}[1, 0] } values %cart)
   {
-    next if !$cart{$_->{id}};
+    next if !$cart{$_->{id}};  # In case deleted earlier in this tick
+
     delete $cart_pos{"@{$_->{pos}}"};
     $_->{pos}[$_->{axis}] += $_->{delta};
+
     if (my $other_cart_id = delete $cart_pos{"@{$_->{pos}}"})
     {
       say "Crash at $_->{pos}[0],$_->{pos}[1]";
       delete @cart{$_->{id}, $other_cart_id};
       next;
     }
+
     $cart_pos{"@{$_->{pos}}"} = $_->{id};
     my $at = $track[$_->{pos}[1]][$_->{pos}[0]];
     $_->{axis}   = 1 - $_->{axis} if $at eq '/' || $at eq '\\' || $at eq '+' && $_->{jn_go} <  2;
