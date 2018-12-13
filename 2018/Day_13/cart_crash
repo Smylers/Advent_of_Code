@@ -13,17 +13,17 @@ my %movement =
   '^' => {axis => 1, delta => -1},
   'v' => {axis => 1, delta => +1},
 );
-my (@track, @cart);
+my (@track, %cart);
 while (<>)
 {
-  push @cart, {pos => [(pos) - 1, scalar @track], %{$movement{$1}}, junction_turn => 1} while /([<v>^])/g;
+  $cart{++(state $id)} = {pos => [(pos) - 1, scalar @track], %{$movement{$1}}, junction_turn => 1} while /([<v>^])/g;
   push @track, [split //,  s/[<>]/-/gr =~ s/[v^]/|/gr];
 }
-my %cart_pos = map { ("@{$_->{pos}}" => 1) } @cart;
+my %cart_pos = map { ("@{$_->{pos}}" => 1) } values %cart;
 
 while (1)
 {
-  foreach (ii_keysort { @{$_->{pos}}[1, 0] } @cart)
+  foreach (ii_keysort { @{$_->{pos}}[1, 0] } values %cart)
   {
     $cart_pos{"@{$_->{pos}}"}--;
     $_->{pos}[$_->{axis}] += $_->{delta};
