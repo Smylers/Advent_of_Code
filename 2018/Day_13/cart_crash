@@ -13,28 +13,37 @@ my %movement =
   '^' => {axis => 1, delta => -1},
   'v' => {axis => 1, delta => +1},
 );
-my (@track, %cart);
+my (@track, %cart, %cart_pos);
 while (<>)
 {
-  $cart{++(state $id)} = {pos => [(pos) - 1, scalar @track], %{$movement{$1}}, junction_turn => 1} while /([<v>^])/g;
+  while (/([<v>^])/g)
+  {
+    (state $id)++;
+    $cart{$id} = {id => $id, pos => [(pos) - 1, scalar @track], %{$movement{$1}}, junction_turn => 1};
+    $cart_pos{"@{$cart{$id}{pos}}"} = $id;
+  }
   push @track, [split //,  s/[<>]/-/gr =~ s/[v^]/|/gr];
 }
-my %cart_pos = map { ("@{$_->{pos}}" => 1) } values %cart;
 
-while (1)
+while (keys %cart > 1)
 {
-  foreach (ii_keysort { @{$_->{pos}}[1, 0] } values %cart)
+  foreach (my @sorted = ii_keysort { @{$_->{pos}}[1, 0] } values %cart)
   {
-    $cart_pos{"@{$_->{pos}}"}--;
+    next if !$cart{$_->{id}};
+    delete $cart_pos{"@{$_->{pos}}"};
     $_->{pos}[$_->{axis}] += $_->{delta};
-    if ($cart_pos{"@{$_->{pos}}"}++)
+    if (my $other_cart_id = delete $cart_pos{"@{$_->{pos}}"})
     {
       say "Crash at $_->{pos}[0],$_->{pos}[1]";
-      exit;
+      delete @cart{$_->{id}, $other_cart_id};
+      next;
     }
+    $cart_pos{"@{$_->{pos}}"} = $_->{id};
     my $at = $track[$_->{pos}[1]][$_->{pos}[0]];
     $_->{axis}   = 1 - $_->{axis} if $at eq '/' || $at eq '\\' || $at eq '+' && $_->{junction_turn} <  2;
     $_->{delta} *= -1             if $at eq '/'                || $at eq '+' && $_->{junction_turn} == $_->{axis};
     $_->{junction_turn} = ($_->{junction_turn} + 1) % 3 if $at eq '+';
   }
 }
+my ($final_cart) = values %cart;
+say "Final cart at: $final_cart->{pos}[0],$final_cart->{pos}[1]";
