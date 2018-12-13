@@ -22,7 +22,7 @@ while (<>)
     $cart{$id} = {id => $id, pos => [(pos) - 1, scalar @track], %{$dir{$1}}, jn_go => 1};
     $cart_pos{"@{$cart{$id}{pos}}"} = $id;
   }
-  push @track, [split //,  s/[<>]/-/gr =~ s/[v^]/|/gr];
+  push @track, [split //];
 }
 
 while (keys %cart > 1)
