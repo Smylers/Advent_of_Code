@@ -1,0 +1,23 @@
+#! /usr/bin/perl
+
+# like_ephemient
+
+use v5.14;
+use warnings;
+
+
+
+my ($find) = @ARGV;
+
+my $recipes = '37';
+my ($chef_1_pos, $chef_2_pos) = (0, 1);
+until ($recipes =~ /$find/g)
+{
+  my $recipe_1 = substr $recipes, $chef_1_pos, 1;
+  my $recipe_2 = substr $recipes, $chef_2_pos, 1;
+  $recipes .= $recipe_1 + $recipe_2;
+  $chef_1_pos = ($chef_1_pos + $recipe_1 + 1) % length $recipes;
+  $chef_2_pos = ($chef_2_pos + $recipe_2 + 1) % length $recipes;
+  pos $recipes = -(length $find) - 1;
+}
+say +(pos $recipes) - length $find;

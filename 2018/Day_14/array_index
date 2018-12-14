@@ -1,0 +1,21 @@
+#! /usr/bin/perl
+
+# array_index
+
+use v5.14;
+use warnings;
+
+use List::AllUtils qw<sum>;
+
+my ($find) = @ARGV;
+
+my $recipes = '37';
+my @chef_pos = (0, 1);
+my $pos;
+until (($pos = index $recipes, $find, (length $recipes) - (length $find) - 1) >= 0)
+{
+  $recipes .= sum map { substr $recipes, $_, 1 } @chef_pos;
+  $_ = ($_ + 1 + substr $recipes, $_, 1) % length $recipes foreach @chef_pos;
+  pos $recipes = -(length $find) - 1;
+}
+say $pos;

@@ -1,0 +1,99 @@
+#! /usr/bin/perl
+
+# benchmark
+
+use v5.14;
+use warnings;
+use Benchmark qw<cmpthese>;
+use List::AllUtils qw<sum>;
+
+my ($find) = @ARGV;
+
+my %impl = 
+(
+  like_ephemient => sub
+  {
+    my $recipes = '37';
+    my ($chef_1_pos, $chef_2_pos) = (0, 1);
+    until ($recipes =~ /$find/g)
+    {
+      my $recipe_1 = substr $recipes, $chef_1_pos, 1;
+      my $recipe_2 = substr $recipes, $chef_2_pos, 1;
+      $recipes .= $recipe_1 + $recipe_2;
+      $chef_1_pos = ($chef_1_pos + $recipe_1 + 1) % length $recipes;
+      $chef_2_pos = ($chef_2_pos + $recipe_2 + 1) % length $recipes;
+      pos $recipes = -(length $find) - 1;
+    }
+    (pos $recipes) - length $find;
+  },
+
+  array => sub
+  {
+    my $recipes = '37';
+    my @chef_pos = (0, 1);
+    until ($recipes =~ /$find/g)
+    {
+      $recipes .= sum map { substr $recipes, $_, 1 } @chef_pos;
+      $_ = ($_ + 1 + substr $recipes, $_, 1) % length $recipes foreach @chef_pos;
+      pos $recipes = -(length $find) - 1;
+    }
+    (pos $recipes) - length $find;
+  },
+
+  index => sub
+  {
+    my $recipes = '37';
+    my ($chef_1_pos, $chef_2_pos) = (0, 1);
+    my $pos;
+    until (($pos = index $recipes, $find, (length $recipes) - (length $find) - 1) >= 0)
+    {
+      my $recipe_1 = substr $recipes, $chef_1_pos, 1;
+      my $recipe_2 = substr $recipes, $chef_2_pos, 1;
+      $recipes .= $recipe_1 + $recipe_2;
+      $chef_1_pos = ($chef_1_pos + $recipe_1 + 1) % length $recipes;
+      $chef_2_pos = ($chef_2_pos + $recipe_2 + 1) % length $recipes;
+      pos $recipes = -(length $find) - 1;
+    }
+    $pos;
+  },
+
+  array_index => sub
+  {
+    my $recipes = '37';
+    my @chef_pos = (0, 1);
+    my $pos;
+    until (($pos = index $recipes, $find, (length $recipes) - (length $find) - 1) >= 0)    
+    {
+      $recipes .= sum map { substr $recipes, $_, 1 } @chef_pos;
+      $_ = ($_ + 1 + substr $recipes, $_, 1) % length $recipes foreach @chef_pos;
+      pos $recipes = -(length $find) - 1;
+    }
+    $pos;
+  },
+
+  rindex => sub {
+    my $recipes = '37';
+    my ($chef_1_pos, $chef_2_pos) = (0, 1);
+    my $pos;
+    while (($pos = rindex $recipes, $find) == -1)
+    {
+      my $recipe_1 = substr $recipes, $chef_1_pos, 1;
+      my $recipe_2 = substr $recipes, $chef_2_pos, 1;
+      $recipes .= $recipe_1 + $recipe_2;
+      $chef_1_pos = ($chef_1_pos + $recipe_1 + 1) % length $recipes;
+      $chef_2_pos = ($chef_2_pos + $recipe_2 + 1) % length $recipes;
+      pos $recipes = -(length $find) - 1;
+    }
+    $pos;
+  }
+);
+
+delete $impl{rindex};
+
+#foreach (qw<like_ephemient array index array_index>)
+#{
+#  say "\n$_";
+#  say $impl{$_}();
+#}
+
+cmpthese -60, \%impl;
