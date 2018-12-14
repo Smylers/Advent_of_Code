@@ -1,0 +1,23 @@
+#! /usr/bin/perl
+
+# part1
+
+use v5.14;
+use warnings;
+use List::AllUtils qw<sum>;
+
+my ($max) = @ARGV;
+my @recipe  = (3, 7);
+my @cooking = (0, 1);
+while (@recipe <= $max + 10)
+{
+  push @recipe, split //, sum @recipe[@cooking];
+  $_ = ($_ + $recipe[$_] + 1) % @recipe for @cooking;
+# my $out = join '', map { " $_ " } @recipe;
+# substr $out, 3 * $cooking[0]    , 1, '(';
+# substr $out, 3 * $cooking[0] + 2, 1, ')';
+# substr $out, 3 * $cooking[1]    , 1, '[';
+# substr $out, 3 * $cooking[1] + 2, 1, ']';
+# say $out;
+}
+say @recipe[$max .. $max + 9];
