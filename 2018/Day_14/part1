@@ -7,17 +7,11 @@ use warnings;
 use List::AllUtils qw<sum>;
 
 my ($max) = @ARGV;
-my @recipe  = (3, 7);
+my $recipe  = '37';
 my @cooking = (0, 1);
-while (@recipe <= $max + 10)
+while (length $recipe <= $max + 10)
 {
-  push @recipe, split //, sum @recipe[@cooking];
-  $_ = ($_ + $recipe[$_] + 1) % @recipe for @cooking;
-# my $out = join '', map { " $_ " } @recipe;
-# substr $out, 3 * $cooking[0]    , 1, '(';
-# substr $out, 3 * $cooking[0] + 2, 1, ')';
-# substr $out, 3 * $cooking[1]    , 1, '[';
-# substr $out, 3 * $cooking[1] + 2, 1, ']';
-# say $out;
+  $recipe .= sum map { substr $recipe, $_, 1 } @cooking;
+  $_ = ($_ + (substr $recipe, $_, 1) + 1) % length $recipe for @cooking;
 }
-say @recipe[$max .. $max + 9];
+say substr $recipe, $max, 10;
