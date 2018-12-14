@@ -1,0 +1,4 @@
+#! /bin/sh
+
+sed 's/[^ ]\{2,\}//g' input | tsort | xargs -n 1 echo -n; echo
+
