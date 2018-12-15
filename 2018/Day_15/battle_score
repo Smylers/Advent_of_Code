@@ -17,10 +17,10 @@ $unit{ $-[0]} = {type => $1} while $input =~ /([EG])/g;
 foreach my $pos (sort { $a <=> $b } keys %unit)
 {
   my $next_pos = nearest_target($unit{$pos}{type}, $map_width, \%space, \%unit, $pos);
-  say "$unit{$pos}{type} ($pos) -> ($next_pos)";
-  # move before checking next one
+  $unit{$next_pos} = delete $unit{$pos};
 }
-# sort for next time
+use DDP;
+p %unit;
 
 sub nearest_target($my_type, $map_width, $space, $unit, $from)
 { 
