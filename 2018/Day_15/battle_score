@@ -16,13 +16,13 @@ $unit{ $-[0]} = {type => $1} while $input =~ /([EG])/g;
 
 foreach my $pos (sort { $a <=> $b } keys %unit)
 {
-  my $next_pos = nearest_target($unit{$pos}{type} eq 'E' ? 'G' : 'E', $map_width, \%space, \%unit, $pos);
+  my $next_pos = nearest_target($unit{$pos}{type}, $map_width, \%space, \%unit, $pos);
   say "$unit{$pos}{type} ($pos) -> ($next_pos)";
   # move before checking next one
 }
 # sort for next time
 
-sub nearest_target($target_type, $map_width, $space, $unit, $from)
+sub nearest_target($my_type, $map_width, $space, $unit, $from)
 { 
   my @queue = ({pos => $from});
   my %tried;
@@ -32,7 +32,7 @@ sub nearest_target($target_type, $map_width, $space, $unit, $from)
     {
       my $pos        = $here->{pos} + $Δ;
       my $first_step = $here->{first_step} // $pos;
-      return $first_step if $unit->{$pos} && $unit->{$pos}{type} eq $target_type;
+      return $first_step if $unit->{$pos} && $unit->{$pos}{type} ne $my_type;
       push @queue, {pos => $pos, first_step => $first_step} if $space->{$pos} && !$unit{$pos} && !$tried{$pos}++;
     }
   }
