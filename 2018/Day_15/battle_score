@@ -16,28 +16,27 @@ while (<>)
 
 foreach (@unit)
 {
-  my $target = nearest_target($_->{type} eq 'E' ? 'G' : 'E', \@map, {x => $_->{x}, y => $_->{y}});
-  say "$_->{type}($_->{x},$_->{y}) -> ($target->{next_pos}{x},$target->{next_pos}{y})[$target->{steps}]";
-  last;
+  my $next_pos = nearest_target($_->{type} eq 'E' ? 'G' : 'E', \@map, {x => $_->{x}, y => $_->{y}});
+  say "$_->{type}($_->{x},$_->{y}) -> ($next_pos->{x},$next_pos->{y})";
+  # move before checking next one
 }
 # sort for next time
-sub nearest_target($target_type, $map, $pos, $steps = 0, $tried_steps_to = {}, $max_steps = undef)
+
+sub nearest_target($target_type, $map, $pos)
 { 
-  $steps++;
-  return if defined $max_steps && $steps == $max_steps;
-  my $target;
-  foreach ({y => -1}, {x => -1}, {x => +1}, {y => +1})
+  my @queue = ($pos);
+  my %tried = ("@$pos{qw<x y>}" => 1);
+  while (my $pos = shift @queue)
   {
-    my ($axis, $Δ) = %$_;
-    my %try_pos = %$pos;
-    $try_pos{$axis} += $Δ;
-    my $thing = $map[$try_pos{y}][$try_pos{x}];
-    return {steps => $steps, next_pos => \%try_pos} if $thing eq $target_type;
-    my $pos_hash = "@try_pos{qw<x y>}";
-    next if $thing ne '.' || defined $tried_steps_to->{$pos_hash} && $tried_steps_to->{$pos_hash} <= $steps;
-    $tried_steps_to->{$pos_hash} = $steps;
-    my $maybe_target = nearest_target($target_type, $map, \%try_pos, $steps, $tried_steps_to, $target ? $target->{steps} : undef);
-    $target = $maybe_target if $maybe_target && (!$target || $maybe_target->{steps} < $target->{steps});
+    foreach ({y => -1}, {x => -1}, {x => +1}, {y => +1})
+    {
+      my ($axis, $Δ) = %$_;
+      my %try_pos = %$pos;
+      $try_pos{$axis} += $Δ;
+      my $thing = $map->[$try_pos{y}][$try_pos{x}];
+      $try_pos{first_step} //= {x => $try_pos{x}, y => $try_pos{y}};
+      return $try_pos{first_step} if $thing eq $target_type;
+      push @queue, \%try_pos if $thing eq '.' && !$tried{"@try_pos{qw<x y>}"}++;
+    }
   }
-  $target;
 }
