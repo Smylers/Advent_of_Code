@@ -16,7 +16,7 @@ $unit{ $-[0]} = {type => $1} while $input =~ /([EG])/g;
 
 foreach my $pos (sort { $a <=> $b } keys %unit)
 {
-  my $next_pos = nearest_target($unit{$pos}{type}, $map_width, \%space, \%unit, $pos);
+  my $next_pos = nearest_target($unit{$pos}{type}, $map_width, \%space, \%unit, $pos) or next;
   $unit{$next_pos} = delete $unit{$pos};
 }
 use DDP;
