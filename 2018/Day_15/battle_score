@@ -1,0 +1,43 @@
+#! /usr/bin/perl
+
+# battle_score
+
+use utf8;
+use v5.14;
+use warnings;
+use experimental qw<signatures>;
+
+my (@map, @unit);
+while (<>)
+{
+  push @unit, {type => $1, x => $-[1], y => scalar @map} while /([EG])/g;
+  push @map, [split //];
+}
+
+foreach (@unit)
+{
+  my $target = nearest_target($_->{type} eq 'E' ? 'G' : 'E', \@map, {x => $_->{x}, y => $_->{y}});
+  say "$_->{type}($_->{x},$_->{y}) -> ($target->{next_pos}{x},$target->{next_pos}{y})[$target->{steps}]";
+  last;
+}
+# sort for next time
+sub nearest_target($target_type, $map, $pos, $steps = 0, $tried_steps_to = {}, $max_steps = undef)
+{ 
+  $steps++;
+  return if defined $max_steps && $steps == $max_steps;
+  my $target;
+  foreach ({y => -1}, {x => -1}, {x => +1}, {y => +1})
+  {
+    my ($axis, $Δ) = %$_;
+    my %try_pos = %$pos;
+    $try_pos{$axis} += $Δ;
+    my $thing = $map[$try_pos{y}][$try_pos{x}];
+    return {steps => $steps, next_pos => \%try_pos} if $thing eq $target_type;
+    my $pos_hash = "@try_pos{qw<x y>}";
+    next if $thing ne '.' || defined $tried_steps_to->{$pos_hash} && $tried_steps_to->{$pos_hash} <= $steps;
+    $tried_steps_to->{$pos_hash} = $steps;
+    my $maybe_target = nearest_target($target_type, $map, \%try_pos, $steps, $tried_steps_to, $target ? $target->{steps} : undef);
+    $target = $maybe_target if $maybe_target && (!$target || $maybe_target->{steps} < $target->{steps});
+  }
+  $target;
+}
