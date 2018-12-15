@@ -7,36 +7,34 @@ use v5.14;
 use warnings;
 use experimental qw<signatures>;
 
-my (@map, @unit);
-while (<>)
-{
-  push @unit, {type => $1, x => $-[1], y => scalar @map} while /([EG])/g;
-  push @map, [split //];
-}
+$/ = undef;
+my $input = <>;
+my $map_width = 1 + index $input, "\n";
+my @map = split //, $input;
+my @unit;
+push @unit, {type => $1, pos => $-[1]} while $input =~ /([EG])/g;
 
 foreach (@unit)
 {
-  my $next_pos = nearest_target($_->{type} eq 'E' ? 'G' : 'E', \@map, {x => $_->{x}, y => $_->{y}});
-  say "$_->{type}($_->{x},$_->{y}) -> ($next_pos->{x},$next_pos->{y})";
+  my $next_pos = nearest_target($_->{type} eq 'E' ? 'G' : 'E', \@map, $map_width, {pos => $_->{pos}});
+  say "$_->{type}($_->{pos}) -> $map[$next_pos]($next_pos)";
   # move before checking next one
 }
 # sort for next time
 
-sub nearest_target($target_type, $map, $pos)
+sub nearest_target($target_type, $map, $map_width, $from)
 { 
-  my @queue = ($pos);
-  my %tried = ("@$pos{qw<x y>}" => 1);
-  while (my $pos = shift @queue)
+  my @queue = ($from);
+  my %tried = ($from->{pos} => 1);
+  while (my $here = shift @queue)
   {
-    foreach ({y => -1}, {x => -1}, {x => +1}, {y => +1})
+    foreach my $Δ (-$map_width, -1, +1, +$map_width)
     {
-      my ($axis, $Δ) = %$_;
-      my %try_pos = %$pos;
-      $try_pos{$axis} += $Δ;
-      my $thing = $map->[$try_pos{y}][$try_pos{x}];
-      $try_pos{first_step} //= {x => $try_pos{x}, y => $try_pos{y}};
-      return $try_pos{first_step} if $thing eq $target_type;
-      push @queue, \%try_pos if $thing eq '.' && !$tried{"@try_pos{qw<x y>}"}++;
+      my %try_next = %$here;
+      my $thing = $map->[$try_next{pos} += $Δ];
+      $try_next{first_step} //= $try_next{pos};
+      return $try_next{first_step} if $thing eq $target_type;
+      push @queue, \%try_next if $thing eq '.' && !$tried{$try_next{pos}}++;
     }
   }
 }
