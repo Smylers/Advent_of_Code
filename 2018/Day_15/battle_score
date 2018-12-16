@@ -6,21 +6,37 @@ use utf8;
 use v5.14;
 use warnings;
 use experimental qw<signatures>;
+use List::AllUtils qw<min_by sum>;
 
 $/ = undef;
 my $input = <>;
 my $map_width = 1 + index $input, "\n";
-my (%space, %unit);
-$space{$-[0]} = 1            while $input =~ /[^#\n]/g;
-$unit{ $-[0]} = {type => $1} while $input =~ /([EG])/g;
-
-foreach my $pos (sort { $a <=> $b } keys %unit)
+my (%space, %unit, %type_count);
+$space{$-[0]} = 1 while $input =~ /[^#\n]/g;
+while ($input =~ /([EG])/g)
 {
-  my $next_pos = nearest_target($unit{$pos}{type}, $map_width, \%space, \%unit, $pos) or next;
-  $unit{$next_pos} = delete $unit{$pos};
+  $unit{ $-[0]} = {type => $1, power => 3, hit_points => 200};
+  $type_count{$1}++;
 }
-use DDP;
-p %unit;
+
+my $completed_rounds = 0;
+ROUND: while (1)
+{
+  foreach my $pos (sort { $a <=> $b } keys %unit)
+  {
+    # XXX consider looping over units, not positions
+    next if !exists $unit{$pos}; # In case eliminated earier this round
+last ROUND if keys %unit == $type_count{$unit{$pos}{type}};
+    my $new_pos = nearest_target($unit{$pos}{type}, $map_width, \%space, \%unit, $pos) or next;
+    $unit{$new_pos} = delete $unit{$pos};
+    my $target_pos = min_by { $unit{$_}{hit_points} } grep { $unit{$_} && $unit{$_}{type} ne $unit{$new_pos}{type} } map { $new_pos + $_ } -$map_width, -1, +1, +$map_width or next;
+    $unit{$target_pos}{hit_points} -= $unit{$new_pos}{power};
+    delete $unit{$target_pos} if $unit{$target_pos}{hit_points} <= 0;
+  }
+  $completed_rounds++;
+}
+say $completed_rounds;
+say $completed_rounds * sum map { $_->{hit_points} } values %unit;
 
 sub nearest_target($my_type, $map_width, $space, $unit, $from)
 { 
@@ -31,9 +47,8 @@ sub nearest_target($my_type, $map_width, $space, $unit, $from)
     foreach my $Δ (-$map_width, -1, +1, +$map_width)
     {
       my $pos        = $here->{pos} + $Δ;
-      my $first_step = $here->{first_step} // $pos;
-      return $first_step if $unit->{$pos} && $unit->{$pos}{type} ne $my_type;
-      push @queue, {pos => $pos, first_step => $first_step} if $space->{$pos} && !$unit{$pos} && !$tried{$pos}++;
+      return $here->{first_step} // $here->{pos} if $unit->{$pos} && $unit->{$pos}{type} ne $my_type;
+      push @queue, {pos => $pos, first_step => $here->{first_step} // $pos} if $space->{$pos} && !$unit{$pos} && !$tried{$pos}++;
     }
   }
 }
