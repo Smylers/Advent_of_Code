@@ -13,7 +13,7 @@ my $input = <>;
 my $map_width = 1 + index $input, "\n";
 my (%space, %unit, %type_count);
 $space{$-[0]} = 1 while $input =~ /[^#\n]/g;
-while ($input =~ /([EG])/g)
+while ($input =~ /(\w)/g)
 {
   $unit{ $-[0]} = {type => $1, power => 3, hit_points => 200};
   $type_count{$1}++;
