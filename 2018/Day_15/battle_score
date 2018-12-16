@@ -31,7 +31,11 @@ last ROUND if keys %unit == $type_count{$unit{$pos}{type}};
     $unit{$new_pos} = delete $unit{$pos};
     my $target_pos = min_by { $unit{$_}{hit_points} } grep { $unit{$_} && $unit{$_}{type} ne $unit{$new_pos}{type} } map { $new_pos + $_ } -$map_width, -1, +1, +$map_width or next;
     $unit{$target_pos}{hit_points} -= $unit{$new_pos}{power};
-    delete $unit{$target_pos} if $unit{$target_pos}{hit_points} <= 0;
+    if ($unit{$target_pos}{hit_points} <= 0)
+    {
+      $type_count{$unit{$target_pos}{type}}--;
+      delete $unit{$target_pos};
+    }
   }
   $completed_rounds++;
 }
