@@ -8,8 +8,7 @@ use warnings;
 use experimental qw<signatures>;
 use List::AllUtils qw<min_by sum>;
 
-$/ = undef;
-my $input = <>;
+my $input = do { local $/; <> };
 my $map_width = 1 + index $input, "\n";
 my (%space, %unit, %type_count);
 $space{$-[0]} = 1 while $input =~ /[^#\n]/g;
