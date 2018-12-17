@@ -63,7 +63,7 @@ sub nearest_target($my_type, $map_width, $space, $unit, $from)
     foreach my $Δ (-$map_width, -1, +1, +$map_width)
     {
       my $pos        = $here->{pos} + $Δ;
-      push @poss_target, {attack_pos => $here, first_step => $here->{first_step} // $here->{pos}} if $unit->{$pos} && $unit->{$pos}{type} ne $my_type;
+      push @poss_target, {attack_pos => $here->{pos}, first_step => $here->{first_step} // $here->{pos}} if $unit->{$pos} && $unit->{$pos}{type} ne $my_type;
       push @next_queue,  {pos => $pos, first_step => $here->{first_step} // $pos} if $space->{$pos} && !$unit{$pos} && !$tried{$pos}++;
     }
     (@queue, @next_queue) = (@next_queue, ()) if !@queue && !@poss_target;
