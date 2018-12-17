@@ -13,15 +13,28 @@ my $input = <>;
 my $map_width = 1 + index $input, "\n";
 my (%space, %unit, %type_count);
 $space{$-[0]} = 1 while $input =~ /[^#\n]/g;
-while ($input =~ /(\w)/g)
+while ($input =~ s/(\w)/./)
 {
   $unit{ $-[0]} = {type => $1, power => 3, hit_points => 200};
   $type_count{$1}++;
 }
 
+my @starting_order = map { $unit{$_} } sort { $a <=> $b } keys %unit;
+
 my $completed_rounds = 0;
 ROUND: while (1)
 {
+  say "Round: $completed_rounds";
+  my $output = $input;
+  my @points;
+  foreach my $pos (sort { $a <=> $b } keys %unit)
+  {
+    substr $output, $pos, 1, $unit{$pos}{type};
+  }
+  say "$output\n";
+  say "$_->{type}($_->{hit_points})" foreach @starting_order;
+  say "\n\n";
+
   foreach my $pos (sort { $a <=> $b } keys %unit)
   {
     # XXX consider looping over units, not positions
@@ -45,14 +58,16 @@ say $completed_rounds * sum map { $_->{hit_points} } values %unit;
 sub nearest_target($my_type, $map_width, $space, $unit, $from)
 { 
   my @queue = ({pos => $from});
-  my %tried;
+  my (%tried, @poss_target, @next_queue);
   while (my $here = shift @queue)
   {
     foreach my $Δ (-$map_width, -1, +1, +$map_width)
     {
       my $pos        = $here->{pos} + $Δ;
-      return $here->{first_step} // $here->{pos} if $unit->{$pos} && $unit->{$pos}{type} ne $my_type;
-      push @queue, {pos => $pos, first_step => $here->{first_step} // $pos} if $space->{$pos} && !$unit{$pos} && !$tried{$pos}++;
+      push @poss_target, {attack_pos => $here, first_step => $here->{first_step} // $here->{pos}};
+      push @next_queue,  {pos => $pos, first_step => $here->{first_step} // $pos} if $space->{$pos} && !$unit{$pos} && !$tried{$pos}++;
     }
+    (@queue, @next_queue) = (@next_queue, ()) if !@queue && !@poss_target;
   }
+  (min_by { $_->{attack_pos} } @poss_target)->{first_step};
 }
