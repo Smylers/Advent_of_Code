@@ -68,5 +68,6 @@ sub nearest_target($my_type, $map_width, $space, $unit, $from)
     }
     (@queue, @next_queue) = (@next_queue, ()) if !@queue && !@poss_target;
   }
+  return if !@poss_target;
   (min_by { $_->{attack_pos} } @poss_target)->{first_step};
 }
