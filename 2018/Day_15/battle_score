@@ -6,7 +6,7 @@ use utf8;
 use v5.14;
 use warnings;
 use experimental qw<signatures>;
-use List::AllUtils qw<min_by sum>;
+use List::AllUtils qw<sort_by min_by sum>;
 
 my $input = do { local $/; <> };
 my $map_width = 1 + index $input, "\n";
@@ -14,44 +14,29 @@ my (%space, %unit, %type_count);
 $space{$-[0]} = 1 while $input =~ /[^#\n]/g;
 while ($input =~ s/(\w)/./)
 {
-  $unit{ $-[0]} = {type => $1, power => 3, hit_points => 200};
+  $unit{ $-[0]} = {type => $1, pos => $-[0], power => 3, hit_points => 200};
   $type_count{$1}++;
 }
-
-my @starting_order = map { $unit{$_} } sort { $a <=> $b } keys %unit;
 
 my $completed_rounds = 0;
 ROUND: while (1)
 {
-  say "Round: $completed_rounds";
-  my $output = $input;
-  my @points;
-  foreach my $pos (sort { $a <=> $b } keys %unit)
+  foreach (sort_by { $_->{pos} } values %unit)
   {
-    substr $output, $pos, 1, $unit{$pos}{type};
-  }
-  say "$output\n";
-  say "$_->{type}($_->{hit_points})" foreach @starting_order;
-  say "\n\n";
-
-  foreach my $pos (sort { $a <=> $b } keys %unit)
-  {
-    # XXX consider looping over units, not positions
-    next if !exists $unit{$pos}; # In case eliminated earier this round
-last ROUND if keys %unit == $type_count{$unit{$pos}{type}};
-    my $new_pos = nearest_target($unit{$pos}{type}, $map_width, \%space, \%unit, $pos) or next;
-    $unit{$new_pos} = delete $unit{$pos};
-    my $target_pos = min_by { $unit{$_}{hit_points} } grep { $unit{$_} && $unit{$_}{type} ne $unit{$new_pos}{type} } map { $new_pos + $_ } -$map_width, -1, +1, +$map_width or next;
-    $unit{$target_pos}{hit_points} -= $unit{$new_pos}{power};
-    if ($unit{$target_pos}{hit_points} <= 0)
+    next if $_->{hit_points} <= 0; # In case eliminated earlier this round.
+last ROUND if keys %unit == $type_count{$_->{type}};
+    my $new_pos = nearest_target($_->{type}, $map_width, \%space, \%unit, $_->{pos}) or next;
+    $unit{$_->{pos} = $new_pos} = delete $unit{$_->{pos}};
+    my $target = min_by { $_->{hit_points} } grep { $_ && $_->{type} ne $unit{$new_pos}{type} } map { $unit{$new_pos + $_} } -$map_width, -1, +1, +$map_width or next;
+    $target->{hit_points} -= $_->{power};
+    if ($target->{hit_points} <= 0)
     {
-      $type_count{$unit{$target_pos}{type}}--;
-      delete $unit{$target_pos};
+      $type_count{$target->{type}}--;
+      delete $unit{$target->{pos}};
     }
   }
   $completed_rounds++;
 }
-say $completed_rounds;
 say $completed_rounds * sum map { $_->{hit_points} } values %unit;
 
 sub nearest_target($my_type, $map_width, $space, $unit, $from)
