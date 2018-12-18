@@ -5,7 +5,6 @@
 use utf8;
 use v5.14;
 use warnings;
-use experimental qw<signatures>;
 use List::AllUtils qw<sort_by min_by sum>;
 
 my $input = do { local $/; <> };
@@ -14,7 +13,7 @@ my (%space, %unit, %type_count);
 $space{$-[0]} = 1 while $input =~ /[^#\n]/g;
 while ($input =~ s/(\w)/./)
 {
-  $unit{ $-[0]} = {type => $1, pos => $-[0], power => 3, hit_points => 200};
+  $unit{$-[0]} = {type => $1, pos => $-[0], power => 3, hit_points => 200};
   $type_count{$1}++;
 }
 
@@ -25,7 +24,20 @@ ROUND: while (1)
   {
     next if $_->{hit_points} <= 0; # In case eliminated earlier this round.
 last ROUND if keys %unit == $type_count{$_->{type}};
-    my $new_pos = next_pos($_->{type}, $map_width, \%space, \%unit, $_->{pos}) or next;
+    my @queue = ({pos => $_->{pos}});
+    my (%tried, @poss_target, @next_queue);
+    while (my $here = shift @queue)
+    {
+      foreach my $Δ (-$map_width, -1, +1, +$map_width)
+      {
+        my $pos = $here->{pos} + $Δ;
+        push @poss_target, {attack_pos => $here->{pos}, first_step => $here->{first_step} // $here->{pos}} if $unit{$pos} && $unit{$pos}{type} ne $_->{type};
+        push @next_queue,  {pos => $pos, first_step => $here->{first_step} // $pos} if $space{$pos} && !$unit{$pos} && !$tried{$pos}++;
+      }
+      (@queue, @next_queue) = (@next_queue, ()) if !@queue && !@poss_target;
+    }
+    next if !@poss_target;
+    my $new_pos = (min_by { $_->{attack_pos} } @poss_target)->{first_step};
     $unit{$_->{pos} = $new_pos} = delete $unit{$_->{pos}};
     my $target = min_by { $_->{hit_points} } grep { $_ && $_->{type} ne $unit{$new_pos}{type} } map { $unit{$new_pos + $_} } -$map_width, -1, +1, +$map_width or next;
     $target->{hit_points} -= $_->{power};
@@ -38,21 +50,3 @@ last ROUND if keys %unit == $type_count{$_->{type}};
   $completed_rounds++;
 }
 say $completed_rounds * sum map { $_->{hit_points} } values %unit;
-
-sub next_pos($my_type, $map_width, $space, $unit, $from)
-{ 
-  my @queue = ({pos => $from});
-  my (%tried, @poss_target, @next_queue);
-  while (my $here = shift @queue)
-  {
-    foreach my $Δ (-$map_width, -1, +1, +$map_width)
-    {
-      my $pos        = $here->{pos} + $Δ;
-      push @poss_target, {attack_pos => $here->{pos}, first_step => $here->{first_step} // $here->{pos}} if $unit->{$pos} && $unit->{$pos}{type} ne $my_type;
-      push @next_queue,  {pos => $pos, first_step => $here->{first_step} // $pos} if $space->{$pos} && !$unit{$pos} && !$tried{$pos}++;
-    }
-    (@queue, @next_queue) = (@next_queue, ()) if !@queue && !@poss_target;
-  }
-  return if !@poss_target;
-  (min_by { $_->{attack_pos} } @poss_target)->{first_step};
-}
