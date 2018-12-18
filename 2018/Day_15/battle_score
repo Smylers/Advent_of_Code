@@ -25,7 +25,7 @@ ROUND: while (1)
   {
     next if $_->{hit_points} <= 0; # In case eliminated earlier this round.
 last ROUND if keys %unit == $type_count{$_->{type}};
-    my $new_pos = nearest_target($_->{type}, $map_width, \%space, \%unit, $_->{pos}) or next;
+    my $new_pos = next_pos($_->{type}, $map_width, \%space, \%unit, $_->{pos}) or next;
     $unit{$_->{pos} = $new_pos} = delete $unit{$_->{pos}};
     my $target = min_by { $_->{hit_points} } grep { $_ && $_->{type} ne $unit{$new_pos}{type} } map { $unit{$new_pos + $_} } -$map_width, -1, +1, +$map_width or next;
     $target->{hit_points} -= $_->{power};
@@ -39,7 +39,7 @@ last ROUND if keys %unit == $type_count{$_->{type}};
 }
 say $completed_rounds * sum map { $_->{hit_points} } values %unit;
 
-sub nearest_target($my_type, $map_width, $space, $unit, $from)
+sub next_pos($my_type, $map_width, $space, $unit, $from)
 { 
   my @queue = ({pos => $from});
   my (%tried, @poss_target, @next_queue);
