@@ -7,10 +7,15 @@ use v5.14;
 use warnings;
 use List::AllUtils qw<sort_by min_by sum>;
 
+# The entire area is a single string, using 1D co-ordinates in reading order:
 my $input = do { local $/; <> };
 my $map_width = 1 + index $input, "\n";
+
+# A hash of which co-ordinates are spaces (including those with units in):
 my (%space, %unit, %type_count);
-$space{$-[0]} = 1 while $input =~ /[^#\n]/g;
+$space{$-[0]} = 1 while $input =~ /[^#\n]/g; # All but wall or line-break
+
+# Each letter is a unit of that type; store by position; count the types:
 while ($input =~ s/(\w)/./)
 {
   $unit{$-[0]} = {type => $1, pos => $-[0], power => 3, hit_points => 200};
@@ -22,24 +27,44 @@ ROUND: while (1)
 {
   foreach (sort_by { $_->{pos} } values %unit)
   {
-    next if $_->{hit_points} <= 0; # In case eliminated earlier this round.
-last ROUND if keys %unit == $type_count{$_->{type}};
+    next if $_->{hit_points} <= 0; # in case eliminated earlier this round
+last ROUND if keys %unit == $type_count{$_->{type}}; # all units are our type
+
     my @queue = ({pos => $_->{pos}});
     my (%tried, @poss_target, @next_queue);
     while (my $here = shift @queue)
     {
+
+      # Look at each square adjacent to the current position:
       foreach my $Δ (-$map_width, -1, +1, +$map_width)
       {
         my $pos = $here->{pos} + $Δ;
-        push @poss_target, {attack_pos => $here->{pos}, first_step => $here->{first_step} // $here->{pos}} if $unit{$pos} && $unit{$pos}{type} ne $_->{type};
-        push @next_queue,  {pos => $pos, first_step => $here->{first_step} // $pos} if $space{$pos} && !$unit{$pos} && !$tried{$pos}++;
+
+        # Note all targets adjacent to here:
+        push @poss_target, {attack_pos => $here->{pos}, first_step => $here->{first_step} // $here->{pos}}
+            if $unit{$pos} && $unit{$pos}{type} ne $_->{type};
+
+        # Note all empty spaces we haven't already tried, in case we have to
+        # take another step:
+        push @next_queue,  {pos => $pos, first_step => $here->{first_step} // $pos}
+            if $space{$pos} && !$unit{$pos} && !$tried{$pos}++;
       }
+
+      # If tried all the spaces at the current number of steps and not found
+      # any adjacent to a target, try the spaces from taking another step:
       (@queue, @next_queue) = (@next_queue, ()) if !@queue && !@poss_target;
     }
+
+    # Take a step towards the target, if any:
     next if !@poss_target;
     my $new_pos = (min_by { $_->{attack_pos} } @poss_target)->{first_step};
     $unit{$_->{pos} = $new_pos} = delete $unit{$_->{pos}};
-    my $target = min_by { $_->{hit_points} } grep { $_ && $_->{type} ne $unit{$new_pos}{type} } map { $unit{$new_pos + $_} } -$map_width, -1, +1, +$map_width or next;
+
+    # Attack the adjacent target with the least hit points, if any:
+    my $target = min_by { $_->{hit_points} }
+        grep { $_ && $_->{type} ne $unit{$new_pos}{type} }
+        map { $unit{$new_pos + $_} } -$map_width, -1, +1, +$map_width
+        or next;
     $target->{hit_points} -= $_->{power};
     if ($target->{hit_points} <= 0)
     {
