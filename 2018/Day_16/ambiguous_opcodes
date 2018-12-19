@@ -9,19 +9,22 @@ use experimental qw<signatures>;
 my @reg;
 my %op =
 (
-  addr => sub($idxA, $idxB) { $reg[$idxA] + $reg[$idxB]      },
-  addi => sub($idxA, $valB) { $reg[$idxA] + $valB            },
-  mulr => sub($idxA, $idxB) { $reg[$idxA] * $reg[$idxB]      },
-  muli => sub($idxA, $valB) { $reg[$idxA] * $valB            },
-  banr => sub($idxA, $idxB) { $reg[$idxA] & $reg[$idxB]      },
-  bani => sub($idxA, $valB) { $reg[$idxA] & $valB            },
-  borr => sub($idxA, $idxB) { $reg[$idxA] | $reg[$idxB]      },
-  bori => sub($idxA, $valB) { $reg[$idxA] | $valB            },
-  setr => sub($idxA, $    ) { $reg[$idxA]                    },
-  seti => sub($valA, $    ) { $valA                          },
-  gtir => sub($valA, $idxB) { $valA       > $reg[$idxB] || 0 },
-  gtri => sub($idxA, $valB) { $reg[$idxA] > $valB       || 0 },
-  gtrr => sub($idxA, $idxB) { $reg[$idxA] > $reg[$idxB] || 0 },
+  addr => sub($idxA, $idxB) { $reg[$idxA] +  $reg[$idxB]      },
+  addi => sub($idxA, $valB) { $reg[$idxA] +  $valB            },
+  mulr => sub($idxA, $idxB) { $reg[$idxA] *  $reg[$idxB]      },
+  muli => sub($idxA, $valB) { $reg[$idxA] *  $valB            },
+  banr => sub($idxA, $idxB) { $reg[$idxA] &  $reg[$idxB]      },
+  bani => sub($idxA, $valB) { $reg[$idxA] &  $valB            },
+  borr => sub($idxA, $idxB) { $reg[$idxA] |  $reg[$idxB]      },
+  bori => sub($idxA, $valB) { $reg[$idxA] |  $valB            },
+  setr => sub($idxA, $    ) { $reg[$idxA]                     },
+  seti => sub($valA, $    ) { $valA                           },
+  gtir => sub($valA, $idxB) { $valA       >  $reg[$idxB] || 0 },
+  gtri => sub($idxA, $valB) { $reg[$idxA] >  $valB       || 0 },
+  gtrr => sub($idxA, $idxB) { $reg[$idxA] >  $reg[$idxB] || 0 },
+  eqir => sub($valA, $idxB) { $valA       == $reg[$idxB] || 0 },
+  eqri => sub($idxA, $valB) { $reg[$idxA] == $valB       || 0 },
+  eqrr => sub($idxA, $idxB) { $reg[$idxA] == $reg[$idxB] || 0 },
 );
 
 {
