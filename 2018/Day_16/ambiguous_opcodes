@@ -24,18 +24,19 @@ my %op =
   gtrr => sub($idxA, $idxB) { $reg[$idxA] > $reg[$idxB] || 0 },
 );
 
-$/ = '';
-my $samples_matching_3;
-while (<>)
 {
-  next if !/^Before:/;
-  my ($opcode, @input, $output_idx, @after, $matches);
-  (@reg[0..3], $opcode, @input[0..1], $output_idx, @after) = /(-?\d+)/g;
-  foreach (values %op)
+  local $/ = "\n\n";
+  my $samples_matching_3;
+  while (<>)
   {
-    $matches++ if $_->(@input[0..1]) == $after[$output_idx];
+    last if /^\n$/; # blank line separates samples from program
+    my ($opcode, @input, $output_idx, @after, $matches);
+    (@reg[0..3], $opcode, @input[0..1], $output_idx, @after) = /(-?\d+)/g;
+    foreach (values %op)
+    {
+      $matches++ if $_->(@input[0..1]) == $after[$output_idx];
+    }
+    $samples_matching_3++ if $matches >= 3;
   }
-  $samples_matching_3++ if $matches >= 3;
+  say "Samples matching at least 3 opcode behaviours: $samples_matching_3";
 }
-say $samples_matching_3;
-
