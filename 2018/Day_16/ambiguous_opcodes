@@ -1,0 +1,41 @@
+#! /usr/bin/perl
+
+# ambiguous_opcodes
+
+use v5.20;
+use warnings;
+use experimental qw<signatures>;
+
+my @reg;
+my %op =
+(
+  addr => sub($idxA, $idxB) { $reg[$idxA] + $reg[$idxB]      },
+  addi => sub($idxA, $valB) { $reg[$idxA] + $valB            },
+  mulr => sub($idxA, $idxB) { $reg[$idxA] * $reg[$idxB]      },
+  muli => sub($idxA, $valB) { $reg[$idxA] * $valB            },
+  banr => sub($idxA, $idxB) { $reg[$idxA] & $reg[$idxB]      },
+  bani => sub($idxA, $valB) { $reg[$idxA] & $valB            },
+  borr => sub($idxA, $idxB) { $reg[$idxA] | $reg[$idxB]      },
+  bori => sub($idxA, $valB) { $reg[$idxA] | $valB            },
+  setr => sub($idxA, $    ) { $reg[$idxA]                    },
+  seti => sub($valA, $    ) { $valA                          },
+  gtir => sub($valA, $idxB) { $valA       > $reg[$idxB] || 0 },
+  gtri => sub($idxA, $valB) { $reg[$idxA] > $valB       || 0 },
+  gtrr => sub($idxA, $idxB) { $reg[$idxA] > $reg[$idxB] || 0 },
+);
+
+$/ = '';
+my $samples_matching_3;
+while (<>)
+{
+  next if !/^Before:/;
+  my ($opcode, @input, $output_idx, @after, $matches);
+  (@reg[0..3], $opcode, @input[0..1], $output_idx, @after) = /(-?\d+)/g;
+  foreach (values %op)
+  {
+    $matches++ if $_->(@input[0..1]) == $after[$output_idx];
+  }
+  $samples_matching_3++ if $matches >= 3;
+}
+say $samples_matching_3;
+
