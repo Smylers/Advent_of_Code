@@ -54,14 +54,15 @@ my %op =
   while (%maybe_op_num)
   {
     my @found_num;
-    while (my ($code, $poss_num) = each %maybe_op_num)
+    foreach (grep { keys %{$maybe_op_num{$_}} == 1 } keys %maybe_op_num)
     {
-      next unless keys %$poss_num == 1;
-      my ($num) = keys %$poss_num;
-      $op{$num} = $op{$code};
-      delete $maybe_op_num{$code};
+      my ($num) = keys %{$maybe_op_num{$_}};
+      $op{$num} = $op{$_};
+      delete $maybe_op_num{$_};
       push @found_num, $num;
     }
     delete @{$_}{@found_num} foreach values %maybe_op_num;
   }
 }
+use DDP;
+p %op;
