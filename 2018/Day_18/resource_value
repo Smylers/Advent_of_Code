@@ -27,7 +27,9 @@ while (1)
   foreach (@acre)
   {
     my %adjacent;
-    foreach my $Δ (-$map_width - 1, -$map_width, -$map_width + 1, -1, +1, +$map_width - 1, +$map_width, +$map_width + 1)
+    foreach my $Δ (-1 - $map_width,  -$map_width,  -$map_width + 1,
+                   -1             ,             ,                1,
+                   -1 + $map_width,  +$map_width,  +$map_width + 1)
     {
       my $adjacent_pos = $pos + $Δ;
       $adjacent{lc $acre[$adjacent_pos]}++ if $adjacent_pos >= 0 && $adjacent_pos < @acre;
