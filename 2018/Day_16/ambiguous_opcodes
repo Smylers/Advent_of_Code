@@ -68,6 +68,5 @@ my %op =
 }
 
 @reg = (0) x 4;
-$reg[$+{output_idx}] = $op{$+{op_num}}(@+{qw<input_1 input_2>})
-    while <> =~ /^(?<op_num>\d+) (?<input_1>-?\d+) (?<input_2>-?\d+) (?<output_idx>\d+)$/;
+$reg[$4] = $op{$1}($2, $3) while <> =~ /^(\d+) (-?\d+) (-?\d+) (\d+)$/;
 say "final value of register 0: $reg[0]";
