@@ -4,6 +4,7 @@
 
 use v5.20;
 use warnings;
+no warnings qw<uninitialized>;
 use experimental qw<signatures>;
 
 my @reg;
@@ -67,9 +68,6 @@ my %op =
 }
 
 @reg = (0) x 4;
-while (<>)
-{
-  /^(?<op_num>\d+) (?<input_1>-?\d+) (?<input_2>-?\d+) (?<output_idx>\d+)$/g;
-  $reg[$+{output_idx}] = $op{$+{op_num}}(@+{qw<input_1 input_2>});
-}
+$reg[$+{output_idx}] = $op{$+{op_num}}(@+{qw<input_1 input_2>})
+    while <> =~ /^(?<op_num>\d+) (?<input_1>-?\d+) (?<input_2>-?\d+) (?<output_idx>\d+)$/;
 say "final value of register 0: $reg[0]";
