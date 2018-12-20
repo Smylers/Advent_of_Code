@@ -65,3 +65,12 @@ my %op =
     delete @{$_}{@found_num} foreach values %maybe_op_num;
   }
 }
+
+@reg = (0) x 4;
+while (<>)
+{
+  my ($op_num, @input, $output_idx);
+  ($op_num, @input[0..1], $output_idx) = /(-?\d+)/g;
+  $reg[$output_idx] = $op{$op_num}(@input);
+}
+say "final value of register 0: $reg[0]";
