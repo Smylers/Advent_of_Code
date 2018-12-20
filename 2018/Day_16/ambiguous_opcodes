@@ -6,6 +6,7 @@ use v5.20;
 use warnings;
 no warnings qw<uninitialized>;
 use experimental qw<signatures>;
+use List::AllUtils qw<pairfirst>;
 
 my @reg;
 my %op =
@@ -52,18 +53,15 @@ my %op =
   }
   say "Samples matching at least 3 opcode behaviours: $samples_matching_3";
 
+  # While there are opcodes that haven't been assigned numbers, grap the first
+  # one that only has one possible number remaining, and assign that:
   while (%maybe_op_num)
   {
-    my @found_num;
-    while (my ($code, $poss_num) = each %maybe_op_num)
-    {
-      next unless keys %$poss_num == 1;
-      my ($num) = keys %$poss_num; # Extract the only number for this code.
-      $op{$num} = $op{$code};
-      delete $maybe_op_num{$code}; # Stop trying to match this code.
-      push @found_num, $num;
-    }
-    delete @{$_}{@found_num} foreach values %maybe_op_num; # Found numbers can't be other codes'.
+    my ($code, $num) = pairfirst { keys %$b == 1 } %maybe_op_num;
+    ($num) = keys %$num; # Extract the only number for this code.
+    $op{$num} = $op{$code};
+    delete $maybe_op_num{$code}; # Stop trying to match this code.
+    delete @{$_}{$num} foreach values %maybe_op_num; # A found number can't be other codes'.
   }
 }
 
