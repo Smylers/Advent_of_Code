@@ -38,7 +38,7 @@ my %op =
     (@reg[0..3], $op_num, @input[0..1], $output_idx, @after) = /(-?\d+)/g;
     while (my ($op_code, $calc_sub) = each %op)
     {
-      if ($calc_sub->(@input[0..1]) == $after[$output_idx])
+      if ($calc_sub->(@input) == $after[$output_idx])
       {
         $matches++;
       }
