@@ -4,7 +4,6 @@
 
 use v5.20;
 use warnings;
-no warnings qw<uninitialized>;
 use experimental qw<signatures>;
 use List::AllUtils qw<pairfirst>;
 
@@ -66,5 +65,5 @@ my %op =
 }
 
 @reg = (0) x 4;
-$reg[$4] = $op{$1}($2, $3) while <> =~ /^(\d+) (-?\d+) (-?\d+) (\d+)$/;
+$reg[$4] = $op{$1}($2, $3) while !eof && <> =~ /^(\d+) (-?\d+) (-?\d+) (\d+)$/;
 say "final value of register 0: $reg[0]";
