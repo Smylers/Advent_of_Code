@@ -45,7 +45,7 @@ my %op =
       }
       else
       {
-        delete $maybe_op_num{$op_code}{$op_num};
+        delete $maybe_op_num{$op_code}{$op_num}; # This num can't be this op.
       }
     }
     $samples_matching_3++ if $matches >= 3;
@@ -58,12 +58,12 @@ my %op =
     while (my ($code, $poss_num) = each %maybe_op_num)
     {
       next unless keys %$poss_num == 1;
-      my ($num) = keys %$poss_num;
+      my ($num) = keys %$poss_num; # Extract the only number for this code.
       $op{$num} = $op{$code};
-      delete $maybe_op_num{$code};
+      delete $maybe_op_num{$code}; # Stop trying to match this code.
       push @found_num, $num;
     }
-    delete @{$_}{@found_num} foreach values %maybe_op_num;
+    delete @{$_}{@found_num} foreach values %maybe_op_num; # Found numbers can't be other codes'.
   }
 }
 
