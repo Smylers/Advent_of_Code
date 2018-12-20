@@ -5,7 +5,6 @@
 use v5.20;
 use warnings;
 use experimental qw<signatures>;
-use Hash::MoreUtils qw<slice_grep>;
 
 my @reg;
 my %op =
@@ -55,9 +54,10 @@ my %op =
   while (%maybe_op_num)
   {
     my @found_num;
-    while (my ($code, $num) = each %{{slice_grep { keys %{$_{$_}} == 1 } \%maybe_op_num}})
+    while (my ($code, $poss_num) = each %maybe_op_num)
     {
-      ($num) = keys %$num;
+      next unless keys %$poss_num == 1;
+      my ($num) = keys %$poss_num;
       $op{$num} = $op{$code};
       delete $maybe_op_num{$code};
       push @found_num, $num;
