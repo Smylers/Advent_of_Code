@@ -7,7 +7,6 @@ use warnings;
 use List::AllUtils qw<sum>;
 
 my ($depth, $target_x, $target_y) = map { /(\d+)/g } <>;
-say "$depth: $target_x, $target_y";
 my $risk;
 my @erosion = map { ($_ * 16807 + $depth) % 20183 } 0 .. $target_x;
 for my $y (1 .. $target_y + 1)
@@ -19,7 +18,6 @@ for my $y (1 .. $target_y + 1)
   for my $x (1 .. $target_x + 1)
   {
     push @erosion, ($geological_index + $depth) % 20183;
-    $risk += $erosion[-1] % 3;
     $geological_index = $erosion[-1] * $prev_erosion[$x - 1];
     $geological_index = 0 if $x == $target_x && $y == $target_y;
   }
