@@ -7,19 +7,29 @@ use warnings;
 use List::AllUtils qw<sum>;
 
 my ($depth, $target_x, $target_y) = map { /(\d+)/g } <>;
+
 my $risk;
+
+# Top row is different:
 my @erosion = map { ($_ * 16807 + $depth) % 20183 } 0 .. $target_x;
-for my $y (1 .. $target_y + 1)
+my $y = 0;
+while (1)
 {
   $risk += sum map { $_ % 3 } @erosion;
+last if $y++ == $target_y;
+
+  # Calculate the next row:
   my @prev_erosion = @erosion;
   @erosion = ();
-  my $geological_index = $y * 48271;
-  for my $x (1 .. $target_x + 1)
+  my $geological_index = $y * 48271; # Left col is special
+  my $x = 0;
+  while (1)
   {
     push @erosion, ($geological_index + $depth) % 20183;
-    $geological_index = $erosion[-1] * $prev_erosion[$x];
-    $geological_index = 0 if $x == $target_x && $y == $target_y;
+  last if $x++ == $target_x;
+
+    # Calculate for the next column:
+    $geological_index = $x == $target_x && $y == $target_y ? 0 : $erosion[-1] * $prev_erosion[$x];
   }
 }
 say $risk;
