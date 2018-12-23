@@ -12,7 +12,6 @@ my @erosion = map { ($_ * 16807 + $depth) % 20183 } 0 .. $target_x;
 for my $y (1 .. $target_y + 1)
 {
   $risk += sum map { $_ % 3 } @erosion;
-  say map { my $mod = $_ % 3; $mod == 0 ? '.' : $mod == 1 ? '=' : '|' } @erosion;
   my @prev_erosion = @erosion;
   @erosion = ();
   my $geological_index = $y * 48271;
